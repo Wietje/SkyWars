@@ -1,0 +1,9 @@
+# Set points higher than zero and players will be able to purchase them for 1 game with their points
+points: 0
+# The items to be given to the player
+items:
+- diamondsword 1 sharpess:5
+- diamondhelmet 1 protection:4
+- diamondchestplate 1 protecton:4
+- diamondleggings 1 protection:4
+- diamongboots 1 protection:4
