@@ -101,7 +101,10 @@ public class WorldController {
             Location location = new Location(islandWorld, spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ());
 
             game.addSpawn(entry.getKey(), location);
-            createSpawnHousing(location);
+
+            if (PluginConfig.buildSchematic() || PluginConfig.buildCages()) {
+                createSpawnHousing(location);
+            }
         }
 
         return islandWorld;

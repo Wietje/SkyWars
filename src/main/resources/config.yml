@@ -46,5 +46,9 @@ island-building:
   interval: 1
   # The amount of blocks per tick
   blocks-per-tick: 20
+# Whether to have the plugin put in the glass cages, disable this if you
+# use your own cages in the schematics. This has to be enabled when using
+# the island-building feature.
+build-cages: true
 # Commands which should be allowed to be used in a Skywars game
 whitelisted-commands: [g, global]

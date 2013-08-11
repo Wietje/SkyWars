@@ -107,4 +107,8 @@ public class PluginConfig {
     public static long buildInterval() {
         return storage.getLong("island-building.interval", 1);
     }
+
+    public static boolean buildCages() {
+        return storage.getBoolean("build-cages", true);
+    }
 }
