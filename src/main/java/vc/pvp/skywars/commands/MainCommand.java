@@ -64,7 +64,7 @@ public class MainCommand implements CommandExecutor {
     }
 
     private void printHelp(Player bukkitPlayer, String label) {
-        bukkitPlayer.sendMessage("\2477[\247cSkyWars\2477 (build id: 5377)]: \247eAvailable commands:");
+        bukkitPlayer.sendMessage("\2477[\247cSkyWars\2477]: \247eAvailable commands:");
 
         for (Map.Entry<String, CommandExecutor> commandEntry : subCommandMap.entrySet())
             if (hasPermission(bukkitPlayer, commandEntry.getValue())) {
