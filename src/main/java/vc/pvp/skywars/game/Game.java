@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sk89q.worldedit.CuboidClipboard;
 import org.bukkit.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -11,11 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.config.PluginConfig;
-import vc.pvp.skywars.controllers.GameController;
-import vc.pvp.skywars.controllers.KitController;
-import vc.pvp.skywars.controllers.PlayerController;
-import vc.pvp.skywars.controllers.WorldController;
+import vc.pvp.skywars.controllers.*;
 import vc.pvp.skywars.player.GamePlayer;
 import vc.pvp.skywars.utilities.PlayerUtil;
 import vc.pvp.skywars.utilities.StringUtils;
@@ -38,11 +37,13 @@ public class Game {
     private Objective objective;
     private boolean built;
 
+    private CuboidClipboard schematic;
     private World world;
     private int[] islandCoordinates;
     private List<Location> chestList = Lists.newArrayList();
 
     public Game(CuboidClipboard schematic) {
+        this.schematic = schematic;
         world = WorldController.get().create(this, schematic);
         slots = spawnPlaces.size();
         gameState = GameState.WAITING;
@@ -97,8 +98,8 @@ public class Game {
         playerIdMap.put(gamePlayer, id);
 
         sendMessage("&6%s &ehas joined the game (%d/%d)", player.getName(), getPlayerCount(), slots);
-        if (slots - playerCount != 0) {
-            sendMessage("&e%d &6more players are needed before the game starts", slots - playerCount);
+        if (getMinimumPlayers() - playerCount != 0) {
+            sendMessage("&e%d &6more players are needed before the game starts", getMinimumPlayers() - playerCount);
         }
 
         PlayerUtil.refreshPlayer(player);
@@ -262,7 +263,7 @@ public class Game {
     }
 
     public void onTick() {
-        if (timer <= 0 || (gameState == GameState.WAITING && !isFull())) {
+        if (timer <= 0 || (gameState == GameState.WAITING && !hasReachedMinimumPlayers())) {
             return;
         }
 
@@ -288,6 +289,17 @@ public class Game {
 
     public boolean isFull() {
         return getPlayerCount() == slots;
+    }
+
+    public int getMinimumPlayers() {
+        FileConfiguration config = SkyWars.get().getConfig();
+        String schematicName = SchematicController.get().getName(schematic);
+
+        return config.getInt("schematics." + schematicName + ".min-players", slots);
+    }
+
+    public boolean hasReachedMinimumPlayers() {
+        return getPlayerCount() >= getMinimumPlayers();
     }
 
     public void sendMessage(String message, Object... args) {
