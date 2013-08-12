@@ -42,8 +42,14 @@ public class SchematicController {
                 continue;
             }
 
+            if (!schematic.isFile()) {
+                LogUtils.log(Level.INFO, getClass(), "Could not load schematic %s: Not a file", schematic.getName());
+                continue;
+            }
+
             SchematicFormat schematicFormat = SchematicFormat.getFormat(schematic);
             if (schematicFormat == null) {
+                LogUtils.log(Level.INFO, getClass(), "Could not load schematic %s: Unable to determine schematic format", schematic.getName());
                 continue;
             }
 
