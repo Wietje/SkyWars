@@ -274,7 +274,7 @@ public class Game {
                 if (timer == 0) {
                     onGameStart();
                 } else if (timer % 10 == 0 || timer <= 5) {
-                    sendMessage(true, "\247eGame starting in \247c%d\247e seconds!", timer);
+                    sendMessage(true, false, "\247eGame starting in \247c%d\247e seconds!", timer);
                 }
                 break;
 
@@ -303,15 +303,18 @@ public class Game {
     }
 
     public void sendMessage(String message, Object... args) {
-        sendMessage(true, message, args);
+        sendMessage(true, true, message, args);
     }
 
-    public void sendMessage(boolean withPrefix, String message, Object... args) {
+    public void sendMessage(boolean withPrefix, boolean color, String message, Object... args) {
         if (args.length > 0) {
             message = String.format(message, args);
         }
 
-        message = ChatColor.translateAlternateColorCodes('&', message);
+        if (color) {
+            message = ChatColor.translateAlternateColorCodes('&', message);
+        }
+
         if (withPrefix) {
             message = PREFIX + message;
         }

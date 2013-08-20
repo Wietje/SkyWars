@@ -86,7 +86,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        gamePlayer.getGame().sendMessage(false, "&e[L] %s &8%s &e&l> &r&7%s", score, player.getDisplayName(), event.getMessage());
+        gamePlayer.getGame().sendMessage(false, false, "\247e[L] %s \2478%s \247e\247l> \247r\2477%s", score, player.getDisplayName(), event.getMessage());
         event.setCancelled(true);
     }
 
