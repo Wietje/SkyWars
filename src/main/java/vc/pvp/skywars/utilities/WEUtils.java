@@ -26,7 +26,7 @@ public class WEUtils {
         editSession.setFastMode(true);
 
         try {
-            schematic.paste(editSession, new Vector(origin.getBlockX(), origin.getBlockY(), origin.getBlockZ()), true);
+            schematic.paste(editSession, new Vector(origin.getBlockX(), origin.getBlockY(), origin.getBlockZ()), PluginConfig.ignoreAir());
         } catch (MaxChangedBlocksException ignored) {
             return false;
         }

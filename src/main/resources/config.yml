@@ -50,5 +50,8 @@ island-building:
 # use your own cages in the schematics. This has to be enabled when using
 # the island-building feature.
 build-cages: true
+# Whether to ignore AIR in the schematics (could leave some gaps in some schematics when enabled,
+# does improve pasting speed though).
+ignore-air: false
 # Commands which should be allowed to be used in a Skywars game
 whitelisted-commands: [g, global]

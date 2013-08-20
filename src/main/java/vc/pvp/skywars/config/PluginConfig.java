@@ -111,4 +111,8 @@ public class PluginConfig {
     public static boolean buildCages() {
         return storage.getBoolean("build-cages", true);
     }
+
+    public static boolean ignoreAir() {
+        return storage.getBoolean("ignore-air", false);
+    }
 }
