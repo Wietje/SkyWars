@@ -3,6 +3,7 @@ package vc.pvp.skywars.storage;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import vc.pvp.skywars.SkyWars;
+import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.player.GamePlayer;
 
 import javax.annotation.Nonnull;
@@ -29,7 +30,10 @@ public class FlatFileStorage extends DataStorage {
             }
 
             FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(playerFile);
-            player.setScore(fileConfiguration.getInt("score", 0));
+
+            if (!PluginConfig.useEconomy()) {
+                player.setScore(fileConfiguration.getInt("score", 0));
+            }
 
         } catch (IOException ioException) {
             System.out.println("Failed to load player " + player + ": " + ioException.getMessage());

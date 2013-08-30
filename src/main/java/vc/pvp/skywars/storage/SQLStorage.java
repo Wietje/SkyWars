@@ -2,6 +2,7 @@ package vc.pvp.skywars.storage;
 
 import org.bukkit.Bukkit;
 import vc.pvp.skywars.SkyWars;
+import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.database.Database;
 import vc.pvp.skywars.player.GamePlayer;
 
@@ -44,7 +45,9 @@ public class SQLStorage extends DataStorage {
                         resultSet = preparedStatement.executeQuery();
 
                         if (resultSet != null && resultSet.next()) {
-                            gamePlayer.setScore(resultSet.getInt("score"));
+                            if (!PluginConfig.useEconomy()) {
+                                gamePlayer.setScore(resultSet.getInt("score"));
+                            }
                             gamePlayer.setGamesPlayed(resultSet.getInt("games_played"));
                             gamePlayer.setGamesWon(resultSet.getInt("games_won"));
                             gamePlayer.setKills(resultSet.getInt("kills"));

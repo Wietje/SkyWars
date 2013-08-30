@@ -1,6 +1,8 @@
 package vc.pvp.skywars.player;
 
 import org.bukkit.entity.Player;
+import vc.pvp.skywars.SkyWars;
+import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.game.Game;
 import vc.pvp.skywars.storage.DataStorage;
 
@@ -53,15 +55,33 @@ public class GamePlayer {
     }
 
     public int getScore() {
+        if (PluginConfig.useEconomy()) {
+            return (int) SkyWars.getEconomy().getBalance(playerName);
+        }
+
         return score;
     }
 
     public void setScore(int score) {
-        this.score = score;
+        if (PluginConfig.useEconomy()) {
+            SkyWars.getEconomy().withdrawPlayer(playerName, SkyWars.getEconomy().getBalance(playerName));
+            SkyWars.getEconomy().depositPlayer(playerName, score);
+        } else {
+            this.score = score;
+        }
     }
 
     public void addScore(int score) {
-        this.score += score;
+        if (PluginConfig.useEconomy()) {
+            if (score < 0) {
+                SkyWars.getEconomy().withdrawPlayer(playerName, -score);
+            } else {
+                SkyWars.getEconomy().depositPlayer(playerName, score);
+            }
+
+        } else {
+            this.score += score;
+        }
     }
 
     @Override

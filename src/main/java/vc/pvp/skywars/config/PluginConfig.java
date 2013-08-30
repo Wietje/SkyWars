@@ -119,4 +119,8 @@ public class PluginConfig {
     public static boolean fillChests() {
         return storage.getBoolean("fill-chests", true);
     }
+
+    public static boolean useEconomy() {
+        return storage.getBoolean("use-economy", false);
+    }
 }

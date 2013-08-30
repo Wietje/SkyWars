@@ -1,6 +1,7 @@
 package vc.pvp.skywars;
 
 import com.earth2me.essentials.IEssentials;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -32,6 +33,7 @@ public class SkyWars extends JavaPlugin {
 
     private static SkyWars instance;
     private static Permission permission;
+    private static Economy economy;
     private Database database;
 
     @Override
@@ -86,6 +88,7 @@ public class SkyWars extends JavaPlugin {
         }
 
         setupPermission();
+        setupEconomy();
 
         SchematicController.get();
         WorldController.get();
@@ -188,6 +191,13 @@ public class SkyWars extends JavaPlugin {
         }
     }
 
+    private void setupEconomy() {
+        RegisteredServiceProvider<Economy> chatProvider = getServer().getServicesManager().getRegistration(Economy.class);
+        if (chatProvider != null) {
+            economy = chatProvider.getProvider();
+        }
+    }
+
     public static SkyWars get() {
         return instance;
     }
@@ -198,6 +208,10 @@ public class SkyWars extends JavaPlugin {
 
     public static Permission getPermission() {
         return permission;
+    }
+
+    public static Economy getEconomy() {
+        return economy;
     }
 
     public static Database getDB() {
