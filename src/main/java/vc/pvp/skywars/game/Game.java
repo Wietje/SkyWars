@@ -323,7 +323,7 @@ public class Game {
                 } else if (timer % 10 == 0 || timer <= 5) {
                     sendMessage(new Messaging.MessageFormatter()
                             .setVariable("timer", String.valueOf(timer))
-                            .format("countdown"));
+                            .format("game.countdown"));
                 }
                 break;
 
