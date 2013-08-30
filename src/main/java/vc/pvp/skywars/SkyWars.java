@@ -9,8 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
 import vc.pvp.skywars.commands.MainCommand;
 import vc.pvp.skywars.controllers.*;
 import vc.pvp.skywars.database.Database;
@@ -34,7 +32,6 @@ public class SkyWars extends JavaPlugin {
 
     private static SkyWars instance;
     private static Permission permission;
-    private Objective objective;
     private Database database;
 
     @Override
@@ -97,8 +94,6 @@ public class SkyWars extends JavaPlugin {
         ChestController.get();
         KitController.get();
 
-        setupScoreboard();
-
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
@@ -121,8 +116,6 @@ public class SkyWars extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        objective.unregister();
-
         Bukkit.getScheduler().cancelTasks(this);
 
         GameController.get().shutdown();
@@ -186,20 +179,6 @@ public class SkyWars extends JavaPlugin {
         }
 
         return true;
-    }
-
-    private void setupScoreboard() {
-        objective = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("skywars");
-        if (objective == null) {
-            objective = Bukkit.getScoreboardManager().getMainScoreboard().registerNewObjective("skywars", "dummy");
-        }
-        objective.setDisplayName("\247c\247lSkyWars");
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        updateScoreboard();
-    }
-
-    public void updateScoreboard() {
-        objective.getScore(Bukkit.getOfflinePlayer("\2479Online")).setScore(Bukkit.getOnlinePlayers().length);
     }
 
     private void setupChat() {

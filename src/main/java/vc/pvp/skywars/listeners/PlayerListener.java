@@ -7,7 +7,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
-import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.controllers.GameController;
 import vc.pvp.skywars.controllers.PlayerController;
@@ -24,7 +23,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         PlayerController.get().register(event.getPlayer());
-        SkyWars.get().updateScoreboard();
     }
 
     @EventHandler
@@ -38,8 +36,6 @@ public class PlayerListener implements Listener {
 
         gamePlayer.save();
         PlayerController.get().unregister(player);
-
-        SkyWars.get().updateScoreboard();
     }
 
     @EventHandler
