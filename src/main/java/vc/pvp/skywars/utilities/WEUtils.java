@@ -102,7 +102,10 @@ public class WEUtils {
                 int time = (int) (ticksRequired * (PluginConfig.buildInterval() * 50L));
                 game.setTimer((int) (time / 1000L));
 
-                BlockBuilder blockBuilder = new BlockBuilder(origin.getWorld(), blockQueue, delayedQueue, PluginConfig.blocksPerTick(), new BlockBuilder.BuildFinishedHandler() {
+                EditSession editSession = new EditSession(new BukkitWorld(origin.getWorld()), Integer.MAX_VALUE);
+                editSession.setFastMode(true);
+
+                BlockBuilder blockBuilder = new BlockBuilder(editSession, blockQueue, delayedQueue, PluginConfig.blocksPerTick(), new BlockBuilder.BuildFinishedHandler() {
                     @Override
                     public void onBuildFinish() {
                         game.setBuilt(true);
