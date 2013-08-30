@@ -115,4 +115,8 @@ public class PluginConfig {
     public static boolean ignoreAir() {
         return storage.getBoolean("ignore-air", false);
     }
+
+    public static boolean fillChests() {
+        return storage.getBoolean("fill-chests", true);
+    }
 }

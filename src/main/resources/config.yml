@@ -53,5 +53,8 @@ build-cages: true
 # Whether to ignore AIR in the schematics (could leave some gaps in some schematics when enabled,
 # does improve pasting speed though).
 ignore-air: false
+# Whether to use fill chests with the contents of chest.yml. Disable this if you want to use
+# schematics it preset chest contents.
+fill-chests: true
 # Commands which should be allowed to be used in a Skywars game
 whitelisted-commands: [g, global]

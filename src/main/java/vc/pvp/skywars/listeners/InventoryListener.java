@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.controllers.ChestController;
 import vc.pvp.skywars.controllers.PlayerController;
 import vc.pvp.skywars.player.GamePlayer;
@@ -14,6 +15,10 @@ public class InventoryListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryOpen(InventoryOpenEvent event) {
+        if (!PluginConfig.fillChests()) {
+            return;
+        }
+
         if (!(event.getInventory().getHolder() instanceof Chest)) {
             return;
         }
@@ -35,5 +40,4 @@ public class InventoryListener implements Listener {
         gamePlayer.getGame().addPopulatedChest(location);
         ChestController.get().populateChest(chest);
     }
-
 }
