@@ -39,6 +39,8 @@ public class BlockBuilder extends BukkitRunnable {
             } else {
                 cancel();
                 buildFinishedHandler.onBuildFinish();
+
+                break;
             }
         }
     }
