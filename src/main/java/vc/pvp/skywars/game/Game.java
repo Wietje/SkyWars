@@ -321,6 +321,7 @@ public class Game {
                     onGameStart();
                 } else if (timer % 10 == 0 || timer <= 5) {
                     sendMessage(new Messaging.MessageFormatter()
+                            .withPrefix()
                             .setVariable("timer", String.valueOf(timer))
                             .format("game.countdown"));
                 }
