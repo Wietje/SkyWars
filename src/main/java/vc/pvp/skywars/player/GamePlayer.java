@@ -64,8 +64,14 @@ public class GamePlayer {
 
     public void setScore(int score) {
         if (PluginConfig.useEconomy()) {
-            SkyWars.getEconomy().withdrawPlayer(playerName, SkyWars.getEconomy().getBalance(playerName));
-            SkyWars.getEconomy().depositPlayer(playerName, score);
+            double balance = SkyWars.getEconomy().getBalance(playerName);
+            if (balance < 0) {
+                SkyWars.getEconomy().depositPlayer(playerName, -balance);
+            } else {
+                SkyWars.getEconomy().withdrawPlayer(playerName, balance);
+            }
+            addScore(score);
+
         } else {
             this.score = score;
         }
