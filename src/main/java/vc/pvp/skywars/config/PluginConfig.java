@@ -123,4 +123,8 @@ public class PluginConfig {
     public static boolean useEconomy() {
         return storage.getBoolean("use-economy", false);
     }
+
+    public static boolean chatHandledByOtherPlugin() {
+        return storage.getBoolean("chat-handled-by-other-plugin", false);
+    }
 }

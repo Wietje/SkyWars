@@ -17,6 +17,8 @@ import vc.pvp.skywars.player.GamePlayer;
 import vc.pvp.skywars.utilities.Messaging;
 import vc.pvp.skywars.utilities.StringUtils;
 
+import java.util.Iterator;
+
 public class PlayerListener implements Listener {
 
     @EventHandler
@@ -65,6 +67,31 @@ public class PlayerListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         GamePlayer gamePlayer = PlayerController.get().get(player);
+
+        if (PluginConfig.chatHandledByOtherPlugin()) {
+            event.setFormat(event.getFormat().replace("{score}", String.valueOf(gamePlayer.getScore())));
+
+            if (gamePlayer.isPlaying()) {
+                for (Iterator<Player> iterator = event.getRecipients().iterator(); iterator.hasNext();) {
+                    GamePlayer gp = PlayerController.get().get(iterator.next());
+
+                    if (!gp.isPlaying() || !gp.getGame().equals(gamePlayer.getGame())) {
+                        iterator.remove();
+                    }
+                }
+
+            } else {
+                for (Iterator<Player> iterator = event.getRecipients().iterator(); iterator.hasNext();) {
+                    GamePlayer gp = PlayerController.get().get(iterator.next());
+
+                    if (gp.isPlaying()) {
+                        iterator.remove();
+                    }
+                }
+            }
+
+            return;
+        }
 
         String message = new Messaging.MessageFormatter()
                 .setVariable("score", StringUtils.formatScore(gamePlayer.getScore()))

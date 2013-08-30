@@ -58,5 +58,7 @@ ignore-air: false
 fill-chests: true
 # Whether to use the economy of the server to figure as score
 use-economy: false
+# Whether the chat formatting should be handled by a different plugin (e.g. EssentialsChat)
+chat-handled-by-other-plugin: false
 # Commands which should be allowed to be used in a Skywars game
 whitelisted-commands: [g, global]
