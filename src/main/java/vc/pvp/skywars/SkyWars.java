@@ -85,7 +85,7 @@ public class SkyWars extends JavaPlugin {
             DataStorage.setInstance(DataStorage.DataStorageType.FILE);
         }
 
-        setupChat();
+        setupPermission();
 
         SchematicController.get();
         WorldController.get();
@@ -181,7 +181,7 @@ public class SkyWars extends JavaPlugin {
         return true;
     }
 
-    private void setupChat() {
+    private void setupPermission() {
         RegisteredServiceProvider<Permission> chatProvider = getServer().getServicesManager().getRegistration(Permission.class);
         if (chatProvider != null) {
             permission = chatProvider.getProvider();
