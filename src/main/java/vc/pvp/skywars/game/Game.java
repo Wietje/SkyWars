@@ -26,7 +26,6 @@ import java.util.Map;
 
 public class Game {
 
-    public static final String PREFIX = "\2477[\247cSkyWars\2477]: ";
     private GameState gameState;
     private Map<Integer, GamePlayer> idPlayerMap = Maps.newLinkedHashMap();
     private Map<GamePlayer, Integer> playerIdMap = Maps.newHashMap();
@@ -351,23 +350,7 @@ public class Game {
         return getPlayerCount() >= getMinimumPlayers();
     }
 
-    public void sendMessage(String message, Object... args) {
-        sendMessage(true, true, message, args);
-    }
-
-    public void sendMessage(boolean withPrefix, boolean color, String message, Object... args) {
-        if (args.length > 0) {
-            message = String.format(message, args);
-        }
-
-        if (color) {
-            message = ChatColor.translateAlternateColorCodes('&', message);
-        }
-
-        if (withPrefix) {
-            message = PREFIX + message;
-        }
-
+    public void sendMessage(String message) {
         for (GamePlayer gamePlayer : getPlayers()) {
             gamePlayer.getBukkitPlayer().sendMessage(message);
         }
