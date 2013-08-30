@@ -8,7 +8,7 @@ game:
   remaining: '&b{remaining}&6 player(s) remain!'
   death: '&9{player}&6 has been killed {score}&6.'
   kill: '&9{player} {player_score}&6 has been killed by &9{killer} {killer_score}&6.'
-  countdown: '&eGame starting in &c{time}&e seconds!'
+  countdown: '&eGame starting in &c{timer}&e seconds!'
   win: '&6{player}&e has won SkyWars on map &9{map} &a(+{score} score)&e!'
   start: '&5The battle has begun!'
   eliminated:
