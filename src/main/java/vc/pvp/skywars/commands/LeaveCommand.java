@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vc.pvp.skywars.controllers.PlayerController;
 import vc.pvp.skywars.player.GamePlayer;
+import vc.pvp.skywars.utilities.Messaging;
 
 @CommandDescription("Leaves a SkyWars game")
 public class LeaveCommand implements CommandExecutor {
@@ -15,7 +16,7 @@ public class LeaveCommand implements CommandExecutor {
         GamePlayer gamePlayer = PlayerController.get().get((Player) sender);
 
         if (!gamePlayer.isPlaying()) {
-            sender.sendMessage("\247cYou are not in a SkyWars game!");
+            sender.sendMessage(new Messaging.MessageFormatter().format("error.not-in-game"));
         } else {
             gamePlayer.getGame().onPlayerLeave(gamePlayer);
         }

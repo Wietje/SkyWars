@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.controllers.ChestController;
 import vc.pvp.skywars.controllers.KitController;
+import vc.pvp.skywars.utilities.Messaging;
 
 @CommandDescription("Reloads the chests, kits and the plugin.yml")
 @CommandPermissions("skywars.command.reload")
@@ -16,8 +17,9 @@ public class ReloadCommand implements CommandExecutor {
         ChestController.get().load();
         KitController.get().load();
         SkyWars.get().reloadConfig();
+        new Messaging(SkyWars.get());
 
-        sender.sendMessage("\247aChests, kits and plugin.yml has been reloaded!");
+        sender.sendMessage(new Messaging.MessageFormatter().format("success.reload"));
         return true;
     }
 }

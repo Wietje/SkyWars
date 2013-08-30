@@ -1,12 +1,12 @@
 package vc.pvp.skywars.listeners;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
+import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.controllers.GameController;
 import vc.pvp.skywars.controllers.PlayerController;
@@ -14,9 +14,8 @@ import vc.pvp.skywars.controllers.SchematicController;
 import vc.pvp.skywars.game.Game;
 import vc.pvp.skywars.game.GameState;
 import vc.pvp.skywars.player.GamePlayer;
+import vc.pvp.skywars.utilities.Messaging;
 import vc.pvp.skywars.utilities.StringUtils;
-
-import java.util.Iterator;
 
 public class PlayerListener implements Listener {
 
@@ -46,7 +45,7 @@ public class PlayerListener implements Listener {
         if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getTypeId() == Material.STONE_PLATE.getId()) {
             if (!gamePlayer.isPlaying() && player.getLocation().getWorld().equals(PluginConfig.getLobbySpawn().getWorld())) {
                 if (SchematicController.get().size() == 0) {
-                    player.sendMessage("\247cThere are no schematics available.");
+                    player.sendMessage(new Messaging.MessageFormatter().format("error.no-schematics"));
                     return;
                 }
 
@@ -67,23 +66,29 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         GamePlayer gamePlayer = PlayerController.get().get(player);
 
-        String score = StringUtils.formatScore(gamePlayer.getScore());
+        String message = new Messaging.MessageFormatter()
+                .setVariable("score", StringUtils.formatScore(gamePlayer.getScore()))
+                .setVariable("player", player.getDisplayName())
+                .setVariable("message", Messaging.stripColor(event.getMessage()))
+                .setVariable("prefix", SkyWars.getChat().getPlayerPrefix(player))
+                .format("chat.local");
 
-        if (!gamePlayer.isPlaying()) {
-            for (Iterator<Player> iterator = event.getRecipients().iterator(); iterator.hasNext(); ) {
-                Player recipient = iterator.next();
+        event.setCancelled(true);
 
-                if (recipient.isOnline() && PlayerController.get().get(recipient).isPlaying()) {
-                    iterator.remove();
+        if (gamePlayer.isPlaying()) {
+            gamePlayer.getGame().sendMessage(message);
+
+        } else {
+            for (GamePlayer gp : PlayerController.get().getAll()) {
+                if (gp.equals(gamePlayer)) {
+                    continue;
+                }
+
+                if (!gp.isPlaying()) {
+                    gp.getBukkitPlayer().sendMessage(message);
                 }
             }
-
-            event.setFormat(ChatColor.translateAlternateColorCodes('&', "&e[L] " + score + " &8%s &e&l> &r&7%s"));
-            return;
         }
-
-        gamePlayer.getGame().sendMessage(false, false, "\247e[L] %s \2478%s \247e\247l> \247r\2477%s", score, player.getDisplayName(), event.getMessage());
-        event.setCancelled(true);
     }
 
     @EventHandler
@@ -96,7 +101,7 @@ public class PlayerListener implements Listener {
 
             if (!command.equals("/sw") && !PluginConfig.isCommandWhitelisted(command)) {
                 event.setCancelled(true);
-                player.sendMessage(String.format("%s\247cThis command is disabled during the game!", Game.PREFIX));
+                player.sendMessage( new Messaging.MessageFormatter().withPrefix().format("error.cmd-disabled"));
             }
         }
     }

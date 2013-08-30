@@ -1,6 +1,7 @@
 package vc.pvp.skywars;
 
 import com.earth2me.essentials.IEssentials;
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -22,6 +23,7 @@ import vc.pvp.skywars.player.GamePlayer;
 import vc.pvp.skywars.storage.DataStorage;
 import vc.pvp.skywars.tasks.SyncTask;
 import vc.pvp.skywars.utilities.FileUtils;
+import vc.pvp.skywars.utilities.Messaging;
 import vc.pvp.skywars.utilities.StringUtils;
 
 import java.io.File;
@@ -34,6 +36,7 @@ public class SkyWars extends JavaPlugin {
     private static SkyWars instance;
     private static Permission permission;
     private static Economy economy;
+    private static Chat chat;
     private Database database;
 
     @Override
@@ -45,6 +48,8 @@ public class SkyWars extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
         reloadConfig();
+
+        new Messaging(this);
 
         getCommand("skywars").setExecutor(new MainCommand());
         getCommand("global").setExecutor(new CommandExecutor() {
@@ -68,7 +73,13 @@ public class SkyWars extends JavaPlugin {
                 GamePlayer gamePlayer = PlayerController.get().get((Player) sender);
                 String score = StringUtils.formatScore(gamePlayer.getScore());
 
-                Bukkit.broadcastMessage(String.format("\247c[G] %s \2478%s \247c\247l> \247r\2477%s", score, ((Player) sender).getDisplayName(), messageBuilder.toString()));
+                Bukkit.broadcastMessage(new Messaging.MessageFormatter()
+                        .setVariable("player", gamePlayer.getBukkitPlayer().getDisplayName())
+                        .setVariable("score", score)
+                        .setVariable("message", Messaging.stripColor(messageBuilder.toString()))
+                        .setVariable("prefix", SkyWars.getChat().getPlayerPrefix(gamePlayer.getBukkitPlayer()))
+                        .format("chat.global"));
+
                 return true;
             }
         });
@@ -89,6 +100,7 @@ public class SkyWars extends JavaPlugin {
 
         setupPermission();
         setupEconomy();
+        setupChat();
 
         SchematicController.get();
         WorldController.get();
@@ -198,6 +210,13 @@ public class SkyWars extends JavaPlugin {
         }
     }
 
+    private void setupChat() {
+        RegisteredServiceProvider<Chat> chatProvider = getServer().getServicesManager().getRegistration(Chat.class);
+        if (chatProvider != null) {
+            chat = chatProvider.getProvider();
+        }
+    }
+
     public static SkyWars get() {
         return instance;
     }
@@ -212,6 +231,10 @@ public class SkyWars extends JavaPlugin {
 
     public static Economy getEconomy() {
         return economy;
+    }
+
+    public static Chat getChat() {
+        return chat;
     }
 
     public static Database getDB() {

@@ -8,6 +8,7 @@ import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.controllers.PlayerController;
 import vc.pvp.skywars.game.GameState;
 import vc.pvp.skywars.player.GamePlayer;
+import vc.pvp.skywars.utilities.Messaging;
 
 @CommandDescription("Starts a SkyWars game")
 @CommandPermissions("skywars.command.start")
@@ -18,13 +19,13 @@ public class StartCommand implements CommandExecutor {
         GamePlayer gamePlayer = PlayerController.get().get((Player) sender);
 
         if (!gamePlayer.isPlaying()) {
-            sender.sendMessage("\247cYou are not in a SkyWars game");
+            sender.sendMessage(new Messaging.MessageFormatter().format("not-in-game"));
         } else if (gamePlayer.getGame().getState() != GameState.WAITING) {
-            sender.sendMessage("\247cGame is already started");
+            sender.sendMessage(new Messaging.MessageFormatter().format("already-started"));
         } else if (gamePlayer.getGame().getPlayerCount() < 2) {
-            sender.sendMessage("\247cNot enough players");
+            sender.sendMessage(new Messaging.MessageFormatter().format("not-enough-players"));
         } else if (PluginConfig.buildSchematic() && !gamePlayer.getGame().isBuilt()) {
-            sender.sendMessage("\247cArena is still under construction");
+            sender.sendMessage(new Messaging.MessageFormatter().format("arena-under-construction"));
         } else {
             gamePlayer.getGame().onGameStart();
         }

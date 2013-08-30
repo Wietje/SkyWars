@@ -16,6 +16,7 @@ import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.controllers.*;
 import vc.pvp.skywars.player.GamePlayer;
+import vc.pvp.skywars.utilities.Messaging;
 import vc.pvp.skywars.utilities.PlayerUtil;
 import vc.pvp.skywars.utilities.StringUtils;
 
@@ -97,9 +98,18 @@ public class Game {
         idPlayerMap.put(getFistEmpty(), gamePlayer);
         playerIdMap.put(gamePlayer, id);
 
-        sendMessage("&6%s &ehas joined the game (%d/%d)", player.getName(), getPlayerCount(), slots);
+        sendMessage(new Messaging.MessageFormatter()
+                .withPrefix()
+                .setVariable("player", player.getDisplayName())
+                .setVariable("amount", String.valueOf(getPlayerCount()))
+                .setVariable("slots", String.valueOf(slots))
+                .format("game.join"));
+
         if (getMinimumPlayers() - playerCount != 0) {
-            sendMessage("&e%d &6more players are needed before the game starts", getMinimumPlayers() - playerCount);
+            sendMessage(new Messaging.MessageFormatter()
+                    .withPrefix()
+                    .setVariable("amount", String.valueOf(getMinimumPlayers() - playerCount))
+                    .format("game.required"));
         }
 
         PlayerUtil.refreshPlayer(player);
@@ -114,9 +124,14 @@ public class Game {
         player.teleport(getSpawn(id).clone().add(0.5, 0.5, 0.5));
 
         List<String> availableKits = KitController.get().getAvailableKits(gamePlayer);
+        char color1 = Messaging.getInstance().getMessage("kit.color.kit").charAt(0);
+        char color2 = Messaging.getInstance().getMessage("kit.color.separator").charAt(0);
 
-        player.sendMessage(PREFIX + "\247eAvailable kits: " + StringUtils.toString(availableKits, 'c', 'a'));
-        player.sendMessage(PREFIX + "\247aUse /sw kit <name> to pick a kit.");
+        player.sendMessage(new Messaging.MessageFormatter()
+                .withPrefix()
+                .setVariable("kits", StringUtils.toString( availableKits, color1, color2))
+                .format("kit.available"));
+        player.sendMessage(new Messaging.MessageFormatter().withPrefix().format("kit.usage"));
 
         if (!PluginConfig.buildSchematic()) {
             timer = 11;
@@ -135,9 +150,19 @@ public class Game {
                 int scorePerLeave = PluginConfig.getScorePerLeave(player);
                 gamePlayer.addScore(scorePerLeave);
 
-                sendMessage("&6%s &ehas left the game %s", player.getName(), StringUtils.formatScore(scorePerLeave, " score"));
+                sendMessage(new Messaging.MessageFormatter()
+                        .withPrefix()
+                        .setVariable("player", player.getDisplayName())
+                        .setVariable("score", StringUtils.formatScore(scorePerLeave, Messaging.getInstance().getMessage("score.naming")))
+                        .format("game.quit.playing"));
+
             } else {
-                sendMessage("&6%s &ehas left the game (%d/%d)", player.getName(), getPlayerCount() - 1, slots);
+                sendMessage(new Messaging.MessageFormatter()
+                        .withPrefix()
+                        .setVariable("player", player.getDisplayName())
+                        .setVariable("total", String.valueOf(getPlayerCount()))
+                        .setVariable("slots", String.valueOf(slots))
+                        .format("game.quit.other"));
             }
         }
 
@@ -177,20 +202,36 @@ public class Game {
             gameKiller.addScore(scorePerKill);
             gameKiller.setKills(gameKiller.getKills() + 1);
 
-            sendMessage(
-                    "\2479%s %s\2476 has been killed by \2479%s %s\2476.",
-                    player.getName(), StringUtils.formatScore(scorePerDeath, " score"),
-                    killer.getName(), StringUtils.formatScore(scorePerKill, " score"));
+            sendMessage(new Messaging.MessageFormatter()
+                    .withPrefix()
+                    .setVariable("player", player.getDisplayName())
+                    .setVariable("killer", killer.getDisplayName())
+                    .setVariable("player_score", StringUtils.formatScore(scorePerDeath, Messaging.getInstance().getMessage("score.naming")))
+                    .setVariable("killer_score", StringUtils.formatScore(scorePerKill, Messaging.getInstance().getMessage("score.naming")))
+                    .format("game.kill"));
+
         } else {
-            sendMessage("\2479%s\2476 has been killed %s\2476.", player.getName(), StringUtils.formatScore(scorePerDeath, " score"));
+            sendMessage(new Messaging.MessageFormatter()
+                    .withPrefix()
+                    .setVariable("player", player.getDisplayName())
+                    .setVariable("score", StringUtils.formatScore(scorePerDeath, Messaging.getInstance().getMessage("score.naming")))
+                    .format("game.death"));
         }
-        sendMessage("\247b%d\2476 player(s) remain!", playerCount - 1);
+
+        sendMessage(new Messaging.MessageFormatter()
+                .withPrefix()
+                .setVariable("remaining", String.valueOf(playerCount - 1))
+                .format("game.remaining"));
 
         for (GamePlayer gp : getPlayers()) {
             if (gp.equals(gamePlayer)) {
-                gp.getBukkitPlayer().sendMessage(String.format("%s\2475You have been eliminated. Better \247cluck\2475 next time!", PREFIX));
+                gp.getBukkitPlayer().sendMessage(new Messaging.MessageFormatter().withPrefix().format("game.eliminated.self"));
+
             } else {
-                gp.getBukkitPlayer().sendMessage(String.format("%s\2476Player \2479%s\2476 has been eliminated!", PREFIX, player.getName()));
+                gp.getBukkitPlayer().sendMessage(new Messaging.MessageFormatter()
+                        .withPrefix()
+                        .setVariable("player", player.getDisplayName())
+                        .format("game.eliminated.others"));
             }
         }
 
@@ -234,7 +275,7 @@ public class Game {
             gamePlayer.getBukkitPlayer().setFoodLevel(20);
 
             gamePlayer.getBukkitPlayer().setScoreboard(scoreboard);
-            gamePlayer.getBukkitPlayer().sendMessage(String.format("%s\2475The battle has begun!", PREFIX));
+            gamePlayer.getBukkitPlayer().sendMessage(new Messaging.MessageFormatter().withPrefix().format("game.start"));
         }
     }
 
@@ -248,7 +289,13 @@ public class Game {
             int score = PluginConfig.getScorePerWin(player);
             gamePlayer.addScore(score);
             gamePlayer.setGamesWon(gamePlayer.getGamesWon() + 1);
-            Bukkit.broadcastMessage(String.format("%s\2476%s\247e has won SkyWars \247a(+%d score)\247e!", PREFIX, player.getName(), score));
+
+            Bukkit.broadcastMessage(new Messaging.MessageFormatter()
+                    .withPrefix()
+                    .setVariable("player", player.getDisplayName())
+                    .setVariable("score", String.valueOf( score ))
+                    .setVariable("map", SchematicController.get().getName(schematic))
+                    .format("game.win" ) );
         }
 
         for (GamePlayer player : getPlayers()) {
@@ -274,7 +321,9 @@ public class Game {
                 if (timer == 0) {
                     onGameStart();
                 } else if (timer % 10 == 0 || timer <= 5) {
-                    sendMessage(true, false, "\247eGame starting in \247c%d\247e seconds!", timer);
+                    sendMessage(new Messaging.MessageFormatter()
+                            .setVariable("timer", String.valueOf(timer))
+                            .format("countdown"));
                 }
                 break;
 

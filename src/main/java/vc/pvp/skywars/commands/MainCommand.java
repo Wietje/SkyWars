@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import vc.pvp.skywars.utilities.Messaging;
 
 import java.util.Map;
 
@@ -23,7 +24,7 @@ public class MainCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("\247cThis command may only be executed as a player");
+            sender.sendMessage(new Messaging.MessageFormatter().format("error.player-only"));
             return true;
         }
 
@@ -41,7 +42,7 @@ public class MainCommand implements CommandExecutor {
 
         CommandExecutor subCommand = subCommandMap.get(subCommandName);
         if (!hasPermission(player, subCommand)) {
-            player.sendMessage("\247cInsufficient permissions!");
+            player.sendMessage(new Messaging.MessageFormatter().format("error.insufficient-permissions"));
             return true;
         }
 
@@ -64,7 +65,7 @@ public class MainCommand implements CommandExecutor {
     }
 
     private void printHelp(Player bukkitPlayer, String label) {
-        bukkitPlayer.sendMessage("\2477[\247cSkyWars\2477]: \247eAvailable commands:");
+        bukkitPlayer.sendMessage(new Messaging.MessageFormatter().withPrefix().format("cmd.available-commands"));
 
         for (Map.Entry<String, CommandExecutor> commandEntry : subCommandMap.entrySet())
             if (hasPermission(bukkitPlayer, commandEntry.getValue())) {

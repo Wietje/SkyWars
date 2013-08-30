@@ -6,6 +6,7 @@ import vc.pvp.skywars.player.GamePlayer;
 import vc.pvp.skywars.storage.DataStorage;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.Map;
 
 public class PlayerController {
@@ -29,6 +30,10 @@ public class PlayerController {
 
     public GamePlayer get(@Nonnull Player bukkitPlayer) {
         return this.playerRegistry.get(bukkitPlayer);
+    }
+
+    public Collection<GamePlayer> getAll() {
+        return playerRegistry.values();
     }
 
     public void shutdown() {

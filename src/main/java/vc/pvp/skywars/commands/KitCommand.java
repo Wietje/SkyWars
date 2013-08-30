@@ -8,6 +8,7 @@ import vc.pvp.skywars.controllers.KitController;
 import vc.pvp.skywars.controllers.PlayerController;
 import vc.pvp.skywars.game.GameState;
 import vc.pvp.skywars.player.GamePlayer;
+import vc.pvp.skywars.utilities.Messaging;
 import vc.pvp.skywars.utilities.StringUtils;
 
 import java.util.List;
@@ -21,16 +22,16 @@ public class KitCommand implements CommandExecutor {
         GamePlayer gamePlayer = PlayerController.get().get(player);
 
         if (!gamePlayer.isPlaying()) {
-            sender.sendMessage("\247cYou need to be in a game in order to pick a kit!");
+            sender.sendMessage(new Messaging.MessageFormatter().format("error.not-in-game"));
         } else if (gamePlayer.hasChosenKit()) {
-            sender.sendMessage("\247cYou have already chosen a kit!");
+            sender.sendMessage(new Messaging.MessageFormatter().format("error.already-has-kit"));
         } else if (gamePlayer.getGame().getState() != GameState.WAITING) {
-            sender.sendMessage("\247cYou can't pick a kit at this time!");
+            sender.sendMessage(new Messaging.MessageFormatter().format("error.can-not-pick-kit"));
         } else if (args.length > 1) {
             KitController.Kit kit = KitController.get().getByName(args[1]);
 
             if (kit == null) {
-                sender.sendMessage("\247cNo such kit!");
+                sender.sendMessage(new Messaging.MessageFormatter().format("error.no-such-kit"));
             } else if (!KitController.get().hasPermission(player, kit)) {
                 if (KitController.get().isPurchaseAble(kit)) {
                     if (KitController.get().canPurchase(gamePlayer, kit)) {
@@ -38,11 +39,11 @@ public class KitCommand implements CommandExecutor {
                         giveKit(gamePlayer, kit);
 
                     } else {
-                        sender.sendMessage("\2474Error:\247c: No enough score to purchase this kit!");
+                        sender.sendMessage(new Messaging.MessageFormatter().format("error.not-enough-score"));
                     }
 
                 } else {
-                    sender.sendMessage("\2474Error:\247c No permission to use this kit!");
+                    sender.sendMessage(new Messaging.MessageFormatter().format("error.no-permission-kit"));
                 }
             } else {
                 giveKit(gamePlayer, kit);
@@ -50,9 +51,14 @@ public class KitCommand implements CommandExecutor {
 
         } else {
             List<String> availableKits = KitController.get().getAvailableKits(gamePlayer);
+            char color1 = Messaging.getInstance().getMessage("kit.color.kit").charAt(0);
+            char color2 = Messaging.getInstance().getMessage("kit.color.separator").charAt(0);
 
-            player.sendMessage("\2477[\247cSkyWars\2477]: \247eAvailable kits: " + StringUtils.toString(availableKits, 'c', 'a'));
-            player.sendMessage("\2477[\247cSkyWars\2477]: \247aUse /sw kit <name> to pick a kit.");
+            player.sendMessage(new Messaging.MessageFormatter()
+                    .withPrefix()
+                    .setVariable( "kits", StringUtils.toString(availableKits, color1, color2))
+                    .format("kit.available"));
+            player.sendMessage(new Messaging.MessageFormatter().withPrefix().format("kit.usage"));
         }
 
         return true;
@@ -63,6 +69,6 @@ public class KitCommand implements CommandExecutor {
         KitController.get().populateInventory(gamePlayer.getBukkitPlayer().getInventory(), kit);
         gamePlayer.getBukkitPlayer().updateInventory();
         gamePlayer.setChosenKit(true);
-        gamePlayer.getBukkitPlayer().sendMessage("\247aEnjoy your kit!");
+        gamePlayer.getBukkitPlayer().sendMessage(new Messaging.MessageFormatter().format("success.enjoy-kit"));
     }
 }

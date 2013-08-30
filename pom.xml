@@ -64,6 +64,7 @@
                     <include>tables.sql</include>
                     <include>chest.yml</include>
                     <include>example.yml</include>
+                    <include>messages.yml</include>
                 </includes>
             </resource>
         </resources>
