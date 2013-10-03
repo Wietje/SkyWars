@@ -33,11 +33,11 @@ public class InventoryListener implements Listener {
         Chest chest = (Chest) event.getInventory().getHolder();
         Location location = chest.getLocation();
 
-        if (gamePlayer.getGame().isChestPopulated(location)) {
+        if (!gamePlayer.getGame().isChest(location)) {
             return;
         }
 
-        gamePlayer.getGame().addPopulatedChest(location);
+        gamePlayer.getGame().removeChest(location);
         ChestController.get().populateChest(chest);
     }
 }

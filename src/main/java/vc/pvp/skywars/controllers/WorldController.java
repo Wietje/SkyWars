@@ -12,6 +12,7 @@ import vc.pvp.skywars.game.Game;
 import vc.pvp.skywars.utilities.LogUtils;
 import vc.pvp.skywars.utilities.WEUtils;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
@@ -104,6 +105,17 @@ public class WorldController {
 
             if (PluginConfig.buildSchematic() || PluginConfig.buildCages()) {
                 createSpawnHousing(location);
+            }
+        }
+
+        Collection<Vector> chests = SchematicController.get().getCachedChests(schematic);
+
+        if (chests != null) {
+            for (Vector location : chests) {
+                Vector spawn = location.add(isleLocation).add(schematic.getOffset());
+                Location chest = new Location(islandWorld, spawn.getBlockX(), spawn.getBlockY(), spawn.getBlockZ());
+
+                game.addChest(chest);
             }
         }
 

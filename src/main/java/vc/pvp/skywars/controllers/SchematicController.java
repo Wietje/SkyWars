@@ -12,6 +12,7 @@ import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.utilities.LogUtils;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -23,6 +24,7 @@ public class SchematicController {
     private final Random random = new Random();
     private final Map<String, CuboidClipboard> schematicMap = Maps.newHashMap();
     private final Map<CuboidClipboard, Map<Integer, Vector>> spawnCache = Maps.newHashMap();
+    private final Map<CuboidClipboard, List<Vector>> chestCache = Maps.newHashMap();
 
     public SchematicController() {
         File dataDirectory = SkyWars.get().getDataFolder();
@@ -84,7 +86,11 @@ public class SchematicController {
                             if (currentBlock == Material.SIGN_POST.getId() || currentBlock == Material.BEACON.getId()) {
                                 cacheSpawn(schematic, spawnId++, currentPoint);
                                 schematic.setBlock(currentPoint, new BaseBlock(0));
+
+                            } else if (currentBlock == Material.CHEST.getId()) {
+                                cacheChest(schematic, currentPoint);
                             }
+
                         }
                     }
                 }
@@ -125,6 +131,23 @@ public class SchematicController {
 
     public Map<Integer, Vector> getCachedSpawns(CuboidClipboard schematic) {
         return spawnCache.get(schematic);
+    }
+
+    private void cacheChest(CuboidClipboard schematic, Vector location) {
+        List<Vector> chestList;
+
+        if (chestCache.containsKey(schematic)) {
+            chestList = chestCache.get(schematic);
+        } else {
+            chestList = Lists.newArrayList();
+        }
+
+        chestList.add(location);
+        chestCache.put(schematic, chestList);
+    }
+
+    public Collection<Vector> getCachedChests(CuboidClipboard schematic) {
+        return chestCache.get(schematic);
     }
 
     public int size() {

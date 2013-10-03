@@ -65,11 +65,15 @@ public class Game {
         this.timer = timer;
     }
 
-    public void addPopulatedChest(Location location) {
+    public void addChest(Location location) {
         chestList.add(location);
     }
 
-    public boolean isChestPopulated(Location location) {
+    public void removeChest(Location location) {
+        chestList.remove(location);
+    }
+
+    public boolean isChest(Location location) {
         return chestList.contains(location);
     }
 
