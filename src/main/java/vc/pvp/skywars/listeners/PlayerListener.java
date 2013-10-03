@@ -69,7 +69,7 @@ public class PlayerListener implements Listener {
         GamePlayer gamePlayer = PlayerController.get().get(player);
 
         if (PluginConfig.chatHandledByOtherPlugin()) {
-            event.setFormat(event.getFormat().replace("{score}", String.valueOf(gamePlayer.getScore())));
+            event.setFormat(event.getFormat().replace("[score]", String.valueOf(gamePlayer.getScore())));
 
             if (gamePlayer.isPlaying()) {
                 for (Iterator<Player> iterator = event.getRecipients().iterator(); iterator.hasNext();) {
