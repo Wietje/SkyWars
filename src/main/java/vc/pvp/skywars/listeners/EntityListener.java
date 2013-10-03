@@ -1,11 +1,14 @@
 package vc.pvp.skywars.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.controllers.PlayerController;
 import vc.pvp.skywars.game.Game;
 import vc.pvp.skywars.game.GameState;
@@ -42,12 +45,21 @@ public class EntityListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(final PlayerDeathEvent event) {
         Player player = event.getEntity();
-        GamePlayer gamePlayer = PlayerController.get().get(player);
+        final GamePlayer gamePlayer = PlayerController.get().get(player);
 
         if (!gamePlayer.isPlaying()) {
             return;
         }
 
-        gamePlayer.getGame().onPlayerDeath(gamePlayer, event);
+        if (player.getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+            Bukkit.getScheduler().runTaskLater(SkyWars.get(), new Runnable() {
+                @Override
+                public void run() {
+                    gamePlayer.getGame().onPlayerDeath(gamePlayer, event);
+                }
+            }, 1L);
+        } else {
+            gamePlayer.getGame().onPlayerDeath(gamePlayer, event);
+        }
     }
 }
