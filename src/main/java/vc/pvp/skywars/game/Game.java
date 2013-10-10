@@ -133,7 +133,7 @@ public class Game {
         KitController.get().openKitMenu(gamePlayer);
 
         if (!PluginConfig.buildSchematic()) {
-            timer = 11;
+            timer = getTimer();
         }
     }
 
@@ -353,6 +353,13 @@ public class Game {
         String schematicName = SchematicController.get().getName(schematic);
 
         return config.getInt("schematics." + schematicName + ".min-players", slots);
+    }
+
+    private int getTimer() {
+        FileConfiguration config = SkyWars.get().getConfig();
+        String schematicName = SchematicController.get().getName(schematic);
+
+        return config.getInt("schematics." + schematicName + ".timer", 11);
     }
 
     public boolean hasReachedMinimumPlayers() {

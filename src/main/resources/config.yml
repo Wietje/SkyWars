@@ -19,6 +19,13 @@ score:
       per-win: 10
       on-death: -1
       on-leave: -1
+# Optional schematic specific configuration
+schematics:
+  schematic-name:
+    # The minimum amount of players for the timer to start
+    min-players: 2
+    # The count down timer before the game starts
+    timer: 11
 # Unused at the moment
 statistics:
   # Statistics update interval
