@@ -130,15 +130,7 @@ public class Game {
         gamePlayer.setSkipFallDamage(true);
         player.teleport(getSpawn(id).clone().add(0.5, 0.5, 0.5));
 
-        List<String> availableKits = KitController.get().getAvailableKits(gamePlayer);
-        char color1 = Messaging.getInstance().getMessage("kit.color.kit").charAt(0);
-        char color2 = Messaging.getInstance().getMessage("kit.color.separator").charAt(0);
-
-        player.sendMessage(new Messaging.MessageFormatter()
-                .withPrefix()
-                .setVariable("kits", StringUtils.toString( availableKits, color1, color2))
-                .format("kit.available"));
-        player.sendMessage(new Messaging.MessageFormatter().withPrefix().format("kit.usage"));
+        KitController.get().openKitMenu(gamePlayer);
 
         if (!PluginConfig.buildSchematic()) {
             timer = 11;
@@ -151,6 +143,8 @@ public class Game {
 
     public void onPlayerLeave(GamePlayer gamePlayer, boolean displayText, boolean process, boolean left) {
         Player player = gamePlayer.getBukkitPlayer();
+
+        IconMenuController.get().destroy(player);
 
         if (displayText) {
             if (left && gameState == GameState.PLAYING) {
@@ -277,6 +271,7 @@ public class Game {
 
             if (gamePlayer != null) {
                 objective.getScore(gamePlayer.getBukkitPlayer()).setScore(0);
+                IconMenuController.get().destroy(gamePlayer.getBukkitPlayer());
                 getSpawn(playerEntry.getKey()).clone().add(0, -1D, 0).getBlock().setTypeId(0);
                 gamePlayer.setGamesPlayed(gamePlayer.getGamesPlayed() + 1);
             }

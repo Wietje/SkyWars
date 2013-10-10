@@ -3,7 +3,7 @@ version: ${project.version}
 description: ${project.description}
 author: Wietje
 main: ${project.groupId}.${project.artifactId}.${project.name}
-depend: [WorldEdit, Essentials, Vault]
+depend: [WorldEdit, Essentials, Vault, WhatIsIt]
 
 commands:
   skywars:

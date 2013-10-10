@@ -108,6 +108,7 @@ public class SkyWars extends JavaPlugin {
         PlayerController.get();
         ChestController.get();
         KitController.get();
+        IconMenuController.get();
 
         try {
             MetricsLite metrics = new MetricsLite(this);

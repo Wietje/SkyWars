@@ -2,8 +2,13 @@ package vc.pvp.skywars.utilities;
 
 import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.MetaItemStack;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import vc.pvp.skywars.SkyWars;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemUtils {
 
@@ -32,6 +37,27 @@ public class ItemUtils {
 
         }
 
+        return itemStack;
+    }
+
+    public static ItemStack name(ItemStack itemStack, String name, String... lores) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        if (!name.isEmpty()) {
+            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+        }
+
+        if (lores.length > 0) {
+            List<String> loreList = new ArrayList<String>(lores.length);
+
+            for (String lore : lores) {
+                loreList.add(ChatColor.translateAlternateColorCodes('&', lore));
+            }
+
+            itemMeta.setLore(loreList);
+        }
+
+        itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 }

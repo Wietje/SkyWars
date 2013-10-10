@@ -29,7 +29,7 @@ error:
   already-has-kit: '&cYou have already chosen a kit!'
   can-not-pick-kit: '&cYou can not pick a kit at this time!'
   no-such-kit: '&cNo such kit!'
-  not-enough-score: '&cNot enough score to purcahse this kit!'
+  not-enough-score: '&cNot enough score to purchase this kit!'
   no-permission-kit: '&cNo permission to use this kit!'
 success:
   lobby-set: '&aLobby spawn has been set.'
@@ -38,10 +38,8 @@ success:
 cmd:
   available-commands: '&eAvailable commands:'
 kit:
-  available: '&eAvailable kits: {kits}'
-  usage: '&aUse /sw kit <name> to pick a kit.'
-  color:
-    separator: 'a'
-    kit: 'c'
+  window-title: '&dKit Menu'
+  lores:
+    no-permission: '&r&cNo permission'
 score:
   naming: ' score'
