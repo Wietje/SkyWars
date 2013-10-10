@@ -40,6 +40,16 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        GamePlayer gamePlayer = PlayerController.get().get(player);
+
+        if (gamePlayer.isPlaying()) {
+            event.setRespawnLocation(PluginConfig.getLobbySpawn());
+        }
+    }
+
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         GamePlayer gamePlayer = PlayerController.get().get(player);

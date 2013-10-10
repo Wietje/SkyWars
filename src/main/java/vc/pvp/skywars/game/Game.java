@@ -3,7 +3,10 @@ package vc.pvp.skywars.game;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sk89q.worldedit.CuboidClipboard;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
@@ -16,6 +19,7 @@ import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.controllers.*;
 import vc.pvp.skywars.player.GamePlayer;
+import vc.pvp.skywars.utilities.CraftBukkitUtil;
 import vc.pvp.skywars.utilities.Messaging;
 import vc.pvp.skywars.utilities.PlayerUtil;
 import vc.pvp.skywars.utilities.StringUtils;
@@ -178,12 +182,17 @@ public class Game {
             }
         }
 
+        if (player.isDead()) {
+            CraftBukkitUtil.forceRespawn(player);
+        } else {
+            PlayerUtil.refreshPlayer(player);
+            player.teleport(PluginConfig.getLobbySpawn());
+        }
+
         playerCount--;
         idPlayerMap.put(playerIdMap.remove(gamePlayer), null);
         gamePlayer.setGame(null);
         gamePlayer.setChosenKit(false);
-        PlayerUtil.refreshPlayer(player);
-        player.teleport(PluginConfig.getLobbySpawn());
 
         if (process && gameState == GameState.PLAYING && playerCount == 1) {
             onGameEnd(getWinner());
