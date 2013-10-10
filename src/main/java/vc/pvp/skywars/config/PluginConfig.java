@@ -9,6 +9,7 @@ import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.utilities.LocationUtil;
 
 import java.util.List;
+import java.util.Locale;
 
 public class PluginConfig {
 
@@ -32,7 +33,7 @@ public class PluginConfig {
     public static void setLobbySpawn(Location location) {
         lobbySpawn = location.clone();
         storage.set("lobby.world", lobbySpawn.getWorld().getName());
-        storage.set("lobby.spawn", String.format("%.2f %.2f %.2f %.2f %.2f", location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
+        storage.set("lobby.spawn", String.format(Locale.US, "%.2f %.2f %.2f %.2f %.2f", location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
         SkyWars.get().saveConfig();
     }
 
