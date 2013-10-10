@@ -51,8 +51,8 @@ public class PluginConfig {
     public static int getScorePerKill(Player player) {
         String group = SkyWars.getPermission().getPrimaryGroup(player);
 
-        if (storage.contains("score." + group + ".per-kill")) {
-            return storage.getInt("score." + group + ".per-kill");
+        if (storage.contains("score.groups." + group + ".per-kill")) {
+            return storage.getInt("score.groups." + group + ".per-kill");
         }
 
         return storage.getInt("score.per-kill", 3);
@@ -61,8 +61,8 @@ public class PluginConfig {
     public static int getScorePerWin(Player player) {
         String group = SkyWars.getPermission().getPrimaryGroup(player);
 
-        if (storage.contains("score." + group + ".per-win")) {
-            return storage.getInt("score." + group + ".per-win");
+        if (storage.contains("score.groups." + group + ".per-win")) {
+            return storage.getInt("score.groups." + group + ".per-win");
         }
 
         return storage.getInt("score.per-win", 10);
@@ -71,8 +71,8 @@ public class PluginConfig {
     public static int getScorePerDeath(Player player) {
         String group = SkyWars.getPermission().getPrimaryGroup(player);
 
-        if (storage.contains("score." + group + ".per-death")) {
-            return storage.getInt("score." + group + ".per-death");
+        if (storage.contains("score.groups." + group + ".per-death")) {
+            return storage.getInt("score.groups." + group + ".per-death");
         }
 
         return storage.getInt("score.per-death", -1);
@@ -81,8 +81,8 @@ public class PluginConfig {
     public static int getScorePerLeave(Player player) {
         String group = SkyWars.getPermission().getPrimaryGroup(player);
 
-        if (storage.contains("score." + group + ".per-leave")) {
-            return storage.getInt("score." + group + ".per-leave");
+        if (storage.contains("score.groups." + group + ".per-leave")) {
+            return storage.getInt("score.groups." + group + ".per-leave");
         }
 
         return storage.getInt("score.per-leave", -1);
