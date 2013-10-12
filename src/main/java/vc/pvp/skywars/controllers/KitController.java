@@ -124,9 +124,8 @@ public class KitController {
                     }
 
                     gamePlayer.setScore(gamePlayer.getScore() - kit.getPoints());
-                }
 
-                if (!hasPermission(event.getPlayer(), kit)) {
+                } else if (!hasPermission(event.getPlayer(), kit)) {
                     event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.no-permission-kit"));
                     return;
                 }
