@@ -117,9 +117,13 @@ public class KitController {
                     return;
                 }
 
-                if (isPurchaseAble(kit) && !canPurchase(gamePlayer, kit)) {
-                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.not-enough-score"));
-                    return;
+                if (isPurchaseAble(kit)) {
+                    if (!canPurchase(gamePlayer, kit)) {
+                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.not-enough-score"));
+                        return;
+                    }
+
+                    gamePlayer.setScore(gamePlayer.getScore() - kit.getPoints());
                 }
 
                 if (!hasPermission(event.getPlayer(), kit)) {
