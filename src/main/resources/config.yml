@@ -67,5 +67,7 @@ fill-chests: true
 use-economy: false
 # Whether the chat formatting should be handled by a different plugin (e.g. EssentialsChat)
 chat-handled-by-other-plugin: false
+# Whether to clear inventory upon game join
+clear-inventory-on-join: true
 # Commands which should be allowed to be used in a Skywars game
 whitelisted-commands: [g, global]

@@ -18,7 +18,6 @@ public class PlayerUtil {
         player.setExp(0.0F);
         player.setLevel(0);
 
-        clearInventory(player);
         removePotionEffects(player);
     }
 

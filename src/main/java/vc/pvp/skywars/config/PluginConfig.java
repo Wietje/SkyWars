@@ -128,4 +128,8 @@ public class PluginConfig {
     public static boolean chatHandledByOtherPlugin() {
         return storage.getBoolean("chat-handled-by-other-plugin", false);
     }
+
+    public static boolean clearInventory() {
+        return storage.getBoolean("clear-inventory-on-join", true);
+    }
 }

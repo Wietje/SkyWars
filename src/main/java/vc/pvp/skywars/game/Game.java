@@ -121,6 +121,10 @@ public class Game {
 
         PlayerUtil.refreshPlayer(player);
 
+        if (PluginConfig.clearInventory()) {
+            PlayerUtil.clearInventory(player);
+        }
+
         if (player.getGameMode() != GameMode.SURVIVAL) {
             player.setGameMode(GameMode.SURVIVAL);
         }
@@ -180,6 +184,8 @@ public class Game {
             CraftBukkitUtil.forceRespawn(player);
         } else {
             PlayerUtil.refreshPlayer(player);
+            PlayerUtil.clearInventory(player);
+
             player.teleport(PluginConfig.getLobbySpawn());
         }
 
