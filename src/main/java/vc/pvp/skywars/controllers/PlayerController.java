@@ -1,6 +1,7 @@
 package vc.pvp.skywars.controllers;
 
 import com.google.common.collect.Maps;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import vc.pvp.skywars.player.GamePlayer;
 import vc.pvp.skywars.storage.DataStorage;
@@ -12,6 +13,12 @@ import java.util.Map;
 public class PlayerController {
 
     private final Map<Player, GamePlayer> playerRegistry = Maps.newHashMap();
+
+    private PlayerController() {
+        for ( Player player : Bukkit.getOnlinePlayers() ) {
+            register( player );
+        }
+    }
 
     public GamePlayer register(@Nonnull Player bukkitPlayer) {
         GamePlayer gamePlayer = null;
