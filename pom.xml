@@ -19,6 +19,10 @@
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -37,9 +41,8 @@
         <dependency>
             <groupId>net.milkbowl</groupId>
             <artifactId>vault</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Vault.jar</systemPath>
+            <version>1.2.27</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.earth2me</groupId>

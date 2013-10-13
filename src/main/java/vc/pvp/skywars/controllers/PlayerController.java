@@ -15,8 +15,8 @@ public class PlayerController {
     private final Map<Player, GamePlayer> playerRegistry = Maps.newHashMap();
 
     private PlayerController() {
-        for ( Player player : Bukkit.getOnlinePlayers() ) {
-            register( player );
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            register(player);
         }
     }
 
