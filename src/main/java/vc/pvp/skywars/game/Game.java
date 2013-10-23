@@ -121,6 +121,10 @@ public class Game {
 
         PlayerUtil.refreshPlayer(player);
 
+        if (PluginConfig.saveInventory()) {
+            gamePlayer.saveCurrentState();
+        }
+
         if (PluginConfig.clearInventory()) {
             PlayerUtil.clearInventory(player);
         }
@@ -145,7 +149,7 @@ public class Game {
         onPlayerLeave(gamePlayer, true, true, true);
     }
 
-    public void onPlayerLeave(GamePlayer gamePlayer, boolean displayText, boolean process, boolean left) {
+    public void onPlayerLeave(final GamePlayer gamePlayer, boolean displayText, boolean process, boolean left) {
         Player player = gamePlayer.getBukkitPlayer();
 
         IconMenuController.get().destroy(player);
@@ -187,6 +191,10 @@ public class Game {
             PlayerUtil.clearInventory(player);
 
             player.teleport(PluginConfig.getLobbySpawn());
+
+            if (PluginConfig.saveInventory()) {
+                gamePlayer.restoreState();
+            }
         }
 
         playerCount--;

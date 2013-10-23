@@ -1,5 +1,6 @@
 package vc.pvp.skywars.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,10 +43,19 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        GamePlayer gamePlayer = PlayerController.get().get(player);
+        final GamePlayer gamePlayer = PlayerController.get().get(player);
 
         if (gamePlayer.isPlaying()) {
             event.setRespawnLocation(PluginConfig.getLobbySpawn());
+
+            if (PluginConfig.saveInventory()) {
+                Bukkit.getScheduler().runTaskLater(SkyWars.get(), new Runnable() {
+                    @Override
+                    public void run() {
+                        gamePlayer.restoreState();
+                    }
+                }, 1L);
+            }
         }
     }
 

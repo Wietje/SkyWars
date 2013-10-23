@@ -1,6 +1,7 @@
 package vc.pvp.skywars.player;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.game.Game;
@@ -18,6 +19,8 @@ public class GamePlayer {
     private int kills;
     private int deaths;
     private boolean skipFallDamage;
+    private ItemStack[] savedInventoryContents = null;
+    private ItemStack[] savedArmorContents = null;
 
     public GamePlayer(Player bukkitPlayer) {
         this.bukkitPlayer = bukkitPlayer;
@@ -137,5 +140,31 @@ public class GamePlayer {
 
     public boolean shouldSkipFallDamage() {
         return skipFallDamage;
+    }
+
+    public void saveCurrentState() {
+        savedArmorContents = bukkitPlayer.getInventory().getArmorContents().clone();
+        savedInventoryContents = bukkitPlayer.getInventory().getContents().clone();
+    }
+
+    @SuppressWarnings("deprecation")
+    public void restoreState() {
+        boolean shouldUpdateInventory = false;
+
+        if (savedArmorContents != null) {
+            bukkitPlayer.getInventory().setArmorContents(savedArmorContents);
+            savedArmorContents = null;
+            shouldUpdateInventory = true;
+        }
+
+        if (savedInventoryContents != null) {
+            bukkitPlayer.getInventory().setContents(savedInventoryContents);
+            savedInventoryContents = null;
+            shouldUpdateInventory = true;
+        }
+
+        if (shouldUpdateInventory) {
+            bukkitPlayer.updateInventory();
+        }
     }
 }

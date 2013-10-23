@@ -69,5 +69,7 @@ use-economy: false
 chat-handled-by-other-plugin: false
 # Whether to clear inventory upon game join
 clear-inventory-on-join: true
+# Whether to save the inventory game join and to restore it on game leave
+save-inventory: false
 # Commands which should be allowed to be used in a Skywars game
 whitelisted-commands: [g, global]

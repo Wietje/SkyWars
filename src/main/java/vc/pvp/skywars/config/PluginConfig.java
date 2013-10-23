@@ -132,4 +132,8 @@ public class PluginConfig {
     public static boolean clearInventory() {
         return storage.getBoolean("clear-inventory-on-join", true);
     }
+
+    public static boolean saveInventory() {
+        return storage.getBoolean("save-inventory", false);
+    }
 }
