@@ -21,7 +21,9 @@ import vc.pvp.skywars.listeners.PlayerListener;
 import vc.pvp.skywars.metrics.MetricsLite;
 import vc.pvp.skywars.player.GamePlayer;
 import vc.pvp.skywars.storage.DataStorage;
+import vc.pvp.skywars.storage.SQLStorage;
 import vc.pvp.skywars.tasks.SyncTask;
+import vc.pvp.skywars.utilities.CraftBukkitUtil;
 import vc.pvp.skywars.utilities.FileUtils;
 import vc.pvp.skywars.utilities.Messaging;
 import vc.pvp.skywars.utilities.StringUtils;
@@ -130,12 +132,21 @@ public class SkyWars extends JavaPlugin {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new SyncTask(), 20L, 20L);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void onDisable() {
         Bukkit.getScheduler().cancelTasks(this);
 
         GameController.get().shutdown();
         PlayerController.get().shutdown();
+
+        if (DataStorage.get() instanceof SQLStorage && !CraftBukkitUtil.isRunning()) {
+            SQLStorage sqlStorage = (SQLStorage) DataStorage.get();
+            while (!sqlStorage.saveProcessor.isEmpty());
+            long currentTime = System.currentTimeMillis();
+            while (System.currentTimeMillis() - currentTime < 1000L);
+            sqlStorage.saveProcessor.stop();
+        }
 
         if (database != null) {
             database.close();

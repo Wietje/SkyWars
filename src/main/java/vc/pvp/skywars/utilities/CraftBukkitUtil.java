@@ -16,6 +16,10 @@ public class CraftBukkitUtil {
         return getMethod(target, "getHandle", new Class<?>[0], new Object[0]);
     }
 
+    public static Object getMethod(@Nonnull Object target, @Nonnull String methodName) {
+        return getMethod(target, methodName, new Class<?>[0], new Object[0]);
+    }
+
     public static Object getMethod(@Nonnull Object target, @Nonnull String methodName,
                                    @Nonnull Class<?>[] paramTypes, @Nonnull Object[] params) {
         Preconditions.checkNotNull(target, "Target is null");
@@ -58,6 +62,16 @@ public class CraftBukkitUtil {
         if (playerListHandle == null) return;
 
         getMethod(playerListHandle, "moveToWorld", new Class<?>[] { playerHandle.getClass(), int.class, boolean.class }, new Object[] { playerHandle, 0, false });
+    }
+
+    public static boolean isRunning() {
+        Object minecraftServer = getMethod(Bukkit.getServer(), "getServer");
+        if (minecraftServer == null) {
+            return false;
+        }
+
+        Object isRunning = getMethod(minecraftServer, "isRunning");
+        return isRunning instanceof Boolean && (Boolean) isRunning;
     }
 
     static {

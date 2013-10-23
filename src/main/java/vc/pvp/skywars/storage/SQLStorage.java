@@ -77,64 +77,88 @@ public class SQLStorage extends DataStorage {
         });
     }
 
-    @Override
-    public void savePlayer(@Nonnull GamePlayer gamePlayer) {
-        SavePlayerTask savePlayerTask = new SavePlayerTask(gamePlayer);
+    public final SaveProcessor saveProcessor = new SaveProcessor();
 
-        if (SkyWars.get().isEnabled()) {
-            Bukkit.getScheduler().runTaskAsynchronously(SkyWars.get(), savePlayerTask);
-        } else {
-            savePlayerTask.run();
+    public static class SaveProcessor implements Runnable {
+
+        private final java.util.concurrent.LinkedBlockingQueue<Runnable> taskQueue = new java.util.concurrent.LinkedBlockingQueue<Runnable>();
+        private final Thread thread = new Thread(this);
+        private boolean running = true;
+
+        public SaveProcessor() {
+            thread.start();
         }
-    }
 
-    private class SavePlayerTask implements Runnable {
+        public void submit(Runnable runnable) {
+            try {
+                taskQueue.put(runnable);
+            } catch (InterruptedException ignored) {
+            }
+        }
 
-        private final GamePlayer gamePlayer;
+        public boolean isEmpty() {
+            return taskQueue.isEmpty();
+        }
 
-        public SavePlayerTask(@Nonnull GamePlayer gamePlayer) {
-            this.gamePlayer = gamePlayer;
+        public void stop() {
+            running = false;
+            thread.interrupt();
         }
 
         @Override
         public void run() {
-            Database database = SkyWars.getDB();
-
-            if (!database.checkConnection()) {
-                return;
-            }
-
-            Connection connection = database.getConnection();
-            PreparedStatement preparedStatement = null;
-
-            try {
-                StringBuilder queryBuilder = new StringBuilder();
-                queryBuilder.append("UPDATE `skywars_player` SET ");
-                queryBuilder.append("`score` = ?, `games_played` = ?, ");
-                queryBuilder.append("`games_won` = ?, `kills` = ?, ");
-                queryBuilder.append("`deaths` = ?, `last_seen` = NOW() ");
-                queryBuilder.append("WHERE `player_name` = ?;");
-
-                preparedStatement = connection.prepareStatement(queryBuilder.toString());
-                preparedStatement.setInt(1, gamePlayer.getScore());
-                preparedStatement.setInt(2, gamePlayer.getGamesPlayed());
-                preparedStatement.setInt(3, gamePlayer.getGamesWon());
-                preparedStatement.setInt(4, gamePlayer.getKills());
-                preparedStatement.setInt(5, gamePlayer.getDeaths());
-                preparedStatement.setString(6, gamePlayer.getName());
-                preparedStatement.executeUpdate();
-
-            } catch (final SQLException sqlException) {
-                sqlException.printStackTrace();
-
-            } finally {
-                if (preparedStatement != null) {
-                    try {
-                        preparedStatement.close();
-                    } catch (final SQLException ignored) {
-                    }
+            while (running) {
+                try {
+                    taskQueue.take().run();
+                } catch (InterruptedException ignored) {
                 }
             }
         }
+    }
+
+    @Override
+    public void savePlayer(@Nonnull final GamePlayer gamePlayer) {
+        saveProcessor.submit(new Runnable() {
+            @Override
+            public void run() {
+                Database database = SkyWars.getDB();
+
+                if (!database.checkConnection()) {
+                    return;
+                }
+
+                Connection connection = database.getConnection();
+                PreparedStatement preparedStatement = null;
+
+                try {
+                    StringBuilder queryBuilder = new StringBuilder();
+                    queryBuilder.append("UPDATE `skywars_player` SET ");
+                    queryBuilder.append("`score` = ?, `games_played` = ?, ");
+                    queryBuilder.append("`games_won` = ?, `kills` = ?, ");
+                    queryBuilder.append("`deaths` = ?, `last_seen` = NOW() ");
+                    queryBuilder.append("WHERE `player_name` = ?;");
+
+                    preparedStatement = connection.prepareStatement(queryBuilder.toString());
+                    preparedStatement.setInt(1, gamePlayer.getScore());
+                    preparedStatement.setInt(2, gamePlayer.getGamesPlayed());
+                    preparedStatement.setInt(3, gamePlayer.getGamesWon());
+                    preparedStatement.setInt(4, gamePlayer.getKills());
+                    preparedStatement.setInt(5, gamePlayer.getDeaths());
+                    preparedStatement.setString(6, gamePlayer.getName());
+                    preparedStatement.executeUpdate();
+
+                } catch (final SQLException sqlException) {
+                    sqlException.printStackTrace();
+
+                } finally {
+                    if (preparedStatement != null) {
+                        try {
+                            preparedStatement.close();
+                        } catch (final SQLException ignored) {
+                        }
+                    }
+                }
+            }
+        });
     }
 }
