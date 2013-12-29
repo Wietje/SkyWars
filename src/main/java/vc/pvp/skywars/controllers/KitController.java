@@ -1,6 +1,5 @@
 package vc.pvp.skywars.controllers;
 
-import com.flobi.WhatIsIt.WhatIsIt;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.bukkit.ChatColor;
@@ -195,6 +194,8 @@ public class KitController {
 
                 if (itemStack != null) {
                     items.add(itemStack);
+                } else {
+                    LogUtils.log(Level.WARNING, getClass(), "Invalid item in kit: " + item);    
                 }
             }
 
@@ -225,7 +226,7 @@ public class KitController {
 
             lores.add("\247r\247eContents\247f:");
             for (ItemStack itemStack : items) {
-                lores.add("\247r\247c" + WhatIsIt.itemName(itemStack));
+                lores.add("\247r\247c" + ItemUtils.itemName(itemStack));
             }
         }
 

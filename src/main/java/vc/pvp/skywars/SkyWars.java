@@ -1,6 +1,5 @@
 package vc.pvp.skywars;
 
-import com.earth2me.essentials.IEssentials;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -231,10 +230,6 @@ public class SkyWars extends JavaPlugin {
 
     public static SkyWars get() {
         return instance;
-    }
-
-    public static IEssentials getEssentials() {
-        return (IEssentials) Bukkit.getPluginManager().getPlugin("Essentials");
     }
 
     public static Permission getPermission() {

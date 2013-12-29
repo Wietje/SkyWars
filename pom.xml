@@ -39,6 +39,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>commandbook</artifactId>
+            <version>LATEST</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>net.milkbowl</groupId>
             <artifactId>vault</artifactId>
             <version>1.2.27</version>
