@@ -214,7 +214,7 @@ public class ItemUtils {
             }
         }
         if (name == null) {
-            name = stack.toString();
+            name = stack.getType().toString().toLowerCase();
         }
         return name;
     }
