@@ -1,5 +1,6 @@
 package vc.pvp.skywars;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -31,6 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
+import org.bukkit.World;
+import vc.pvp.skywars.utilities.WorldGenerator;
 
 public class SkyWars extends JavaPlugin {
 
@@ -164,8 +167,34 @@ public class SkyWars extends JavaPlugin {
                 if (!file.isDirectory() || !file.getName().matches("island-\\d+")) {
                     continue;
                 }
-
-                FileUtils.deleteFolder(file);
+                World world = this.getServer().getWorld(file.getName());
+                Boolean result = false;
+                if (Bukkit.getPluginManager().getPlugin("Multiverse-Core") != null) {
+                    MultiverseCore multiVerse = (MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+                    if (world != null) {
+                        result = multiVerse.getMVWorldManager().deleteWorld(file.getName());
+                    } else {
+                        result = multiVerse.getMVWorldManager().removeWorldFromConfig(file.getName());
+                    }
+                }
+                if (!result) {
+                    if (world != null) {
+                        Boolean unloadResult = this.getServer().unloadWorld(world, false);
+                        if (unloadResult == true) {
+                            this.getLogger().log(Level.INFO, "World ''{0}'' was unloaded from memory.", file.getName());
+                        } else {
+                            this.getLogger().log(Level.SEVERE, "World ''{0}'' could not be unloaded.", file.getName());
+                            return;
+                        }
+                    }
+                    result = FileUtils.deleteFolder(file);
+                    if (result == true) {
+                        this.getLogger().log(Level.INFO, "World ''{0}'' was deleted.", file.getName());
+                    } else {
+                        this.getLogger().log(Level.SEVERE, "World ''{0}'' was NOT deleted.", file.getName());
+                        this.getLogger().log(Level.SEVERE, "Please check your file permissions on ''{0}''", file.getName());
+                    }
+                }
             }
         }
 
@@ -246,5 +275,10 @@ public class SkyWars extends JavaPlugin {
 
     public static Database getDB() {
         return instance.database;
+    }
+    
+    @Override
+    public WorldGenerator getDefaultWorldGenerator(String worldName, String id) {
+        return new WorldGenerator();
     }
 }
