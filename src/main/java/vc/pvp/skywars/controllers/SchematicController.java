@@ -64,7 +64,8 @@ public class SchematicController {
 
         LogUtils.log(Level.INFO, getClass(), "Registered %d schematics ...", schematicMap.size());
     }
-
+    
+    @SuppressWarnings("deprecation")
     public void registerSchematic(final String name, final CuboidClipboard schematic) {
         Bukkit.getScheduler().runTaskAsynchronously(SkyWars.get(), new Runnable() {
             @Override

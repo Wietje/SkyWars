@@ -128,25 +128,25 @@ public class WorldController {
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
+        
+        world.getBlockAt(x, y - 1, z).setType(Material.GLASS);
+        world.getBlockAt(x, y + 3, z).setType(Material.GLASS);
 
-        world.getBlockAt(x, y - 1, z).setTypeId(20, false);
-        world.getBlockAt(x, y + 3, z).setTypeId(20, false);
+        world.getBlockAt(x + 1, y, z).setType(Material.GLASS);
+        world.getBlockAt(x + 1, y + 1, z).setType(Material.GLASS);
+        world.getBlockAt(x + 1, y + 2, z).setType(Material.GLASS);
 
-        world.getBlockAt(x + 1, y, z).setTypeId(20, false);
-        world.getBlockAt(x + 1, y + 1, z).setTypeId(20, false);
-        world.getBlockAt(x + 1, y + 2, z).setTypeId(20, false);
+        world.getBlockAt(x - 1, y, z).setType(Material.GLASS);
+        world.getBlockAt(x - 1, y + 1, z).setType(Material.GLASS);
+        world.getBlockAt(x - 1, y + 2, z).setType(Material.GLASS);
 
-        world.getBlockAt(x - 1, y, z).setTypeId(20, false);
-        world.getBlockAt(x - 1, y + 1, z).setTypeId(20, false);
-        world.getBlockAt(x - 1, y + 2, z).setTypeId(20, false);
+        world.getBlockAt(x, y, z + 1).setType(Material.GLASS);
+        world.getBlockAt(x, y + 1, z + 1).setType(Material.GLASS);
+        world.getBlockAt(x, y + 2, z + 1).setType(Material.GLASS);
 
-        world.getBlockAt(x, y, z + 1).setTypeId(20, false);
-        world.getBlockAt(x, y + 1, z + 1).setTypeId(20, false);
-        world.getBlockAt(x, y + 2, z + 1).setTypeId(20, false);
-
-        world.getBlockAt(x, y, z - 1).setTypeId(20, false);
-        world.getBlockAt(x, y + 1, z - 1).setTypeId(20, false);
-        world.getBlockAt(x, y + 2, z - 1).setTypeId(20, false);
+        world.getBlockAt(x, y, z - 1).setType(Material.GLASS);
+        world.getBlockAt(x, y + 1, z - 1).setType(Material.GLASS);
+        world.getBlockAt(x, y + 2, z - 1).setType(Material.GLASS);
     }
 
     private World createWorld() {
