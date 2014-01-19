@@ -58,7 +58,7 @@ public class GamePlayer {
     }
 
     public int getScore() {
-        if (PluginConfig.useEconomy()) {
+        if (PluginConfig.useEconomy() && SkyWars.getEconomy() != null) {
             return (int) SkyWars.getEconomy().getBalance(playerName);
         }
 
@@ -66,7 +66,7 @@ public class GamePlayer {
     }
 
     public void setScore(int score) {
-        if (PluginConfig.useEconomy()) {
+        if (PluginConfig.useEconomy() && SkyWars.getEconomy() != null) {
             double balance = SkyWars.getEconomy().getBalance(playerName);
             if (balance < 0) {
                 SkyWars.getEconomy().depositPlayer(playerName, -balance);
@@ -81,7 +81,7 @@ public class GamePlayer {
     }
 
     public void addScore(int score) {
-        if (PluginConfig.useEconomy()) {
+        if (PluginConfig.useEconomy() && SkyWars.getEconomy() != null) {
             if (score < 0) {
                 SkyWars.getEconomy().withdrawPlayer(playerName, -score);
             } else {
