@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import vc.pvp.skywars.utilities.WorldGenerator;
 
@@ -179,12 +180,11 @@ public class SkyWars extends JavaPlugin {
                 }
                 if (!result) {
                     if (world != null) {
-                        Boolean unloadResult = this.getServer().unloadWorld(world, false);
-                        if (unloadResult == true) {
+                        result = this.getServer().unloadWorld(world, true);
+                        if (result == true) {
                             this.getLogger().log(Level.INFO, "World ''{0}'' was unloaded from memory.", file.getName());
                         } else {
                             this.getLogger().log(Level.SEVERE, "World ''{0}'' could not be unloaded.", file.getName());
-                            return;
                         }
                     }
                     result = FileUtils.deleteFolder(file);
@@ -192,6 +192,7 @@ public class SkyWars extends JavaPlugin {
                         this.getLogger().log(Level.INFO, "World ''{0}'' was deleted.", file.getName());
                     } else {
                         this.getLogger().log(Level.SEVERE, "World ''{0}'' was NOT deleted.", file.getName());
+                        this.getLogger().log(Level.SEVERE, "Are you sure the folder {0} exists?", file.getName());
                         this.getLogger().log(Level.SEVERE, "Please check your file permissions on ''{0}''", file.getName());
                     }
                 }
