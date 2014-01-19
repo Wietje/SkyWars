@@ -31,7 +31,7 @@ public class FlatFileStorage extends DataStorage {
 
             FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(playerFile);
 
-            if (!PluginConfig.useEconomy()) {
+            if (!PluginConfig.useEconomy() || SkyWars.getEconomy() == null) {
                 player.setScore(fileConfiguration.getInt("score", 0));
             }
 
