@@ -23,6 +23,10 @@
             <id>vault-repo</id>
             <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
         </repository>
+        <repository>
+            <id>multiverse-repo</id>
+            <url>http://repo.onarandombox.com/content/groups/public</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -48,6 +52,12 @@
             <groupId>net.milkbowl</groupId>
             <artifactId>vault</artifactId>
             <version>1.2.27</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.onarandombox.multiversecore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <version>LATEST</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
