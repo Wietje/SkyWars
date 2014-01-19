@@ -117,8 +117,12 @@ public class PluginConfig {
         return storage.getBoolean("ignore-air", false);
     }
 
-    public static boolean fillChests() {
-        return storage.getBoolean("fill-chests", true);
+    public static boolean fillEmptyChests() {
+        return storage.getBoolean("fill-empty-chests", true);
+    }
+    
+    public static boolean fillPopulatedChests() {
+        return storage.getBoolean("fill-populated-chests", true);
     }
 
     public static boolean useEconomy() {
@@ -135,5 +139,15 @@ public class PluginConfig {
 
     public static boolean saveInventory() {
         return storage.getBoolean("save-inventory", false);
+    }
+
+    public static void migrateConfig() {
+        if (storage.isSet("fill-chests")) {
+            Boolean fill = storage.getBoolean("fill-chests");
+            storage.set("fill-empty-chests", fill);
+            storage.set("fill-populated-chests", fill);
+            storage.set("fill-chests", null);
+        }
+        SkyWars.get().saveConfig();
     }
 }

@@ -60,9 +60,11 @@ build-cages: true
 # Whether to ignore AIR in the schematics (could leave some gaps in some schematics when enabled,
 # does improve pasting speed though).
 ignore-air: false
-# Whether to use fill chests with the contents of chest.yml. Disable this if you want to use
+# Whether to fill empty chests with the contents of chest.yml. Disable this if you want to use
 # schematics it preset chest contents.
-fill-chests: true
+fill-empty-chests: true
+# Whether to fill already populated chests with the contents of chest.yml.
+fill-populated-chests: false
 # Whether to use the economy of the server to figure as score
 use-economy: false
 # Whether the chat formatting should be handled by a different plugin (e.g. EssentialsChat)

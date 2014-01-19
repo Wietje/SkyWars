@@ -32,8 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import org.bukkit.Chunk;
 import org.bukkit.World;
+import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.utilities.WorldGenerator;
 
 public class SkyWars extends JavaPlugin {
@@ -52,6 +52,7 @@ public class SkyWars extends JavaPlugin {
 
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+        PluginConfig.migrateConfig();
         reloadConfig();
 
         new Messaging(this);
