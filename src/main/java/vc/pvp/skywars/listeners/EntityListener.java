@@ -37,6 +37,7 @@ public class EntityListener implements Listener {
             gamePlayer.setSkipFallDamage(false);
             event.setCancelled(true);
         } else if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
+            player.setFallDistance(0F);
             event.setCancelled(true);
             gamePlayer.getGame().onPlayerDeath(gamePlayer, null);
         }
