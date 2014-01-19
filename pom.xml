@@ -7,7 +7,7 @@
     <groupId>vc.pvp</groupId>
     <artifactId>skywars</artifactId>
     <name>SkyWars</name>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <description>SkyWars plugin</description>
 
     <repositories>
