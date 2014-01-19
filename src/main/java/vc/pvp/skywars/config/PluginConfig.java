@@ -50,42 +50,42 @@ public class PluginConfig {
     }
 
     public static int getScorePerKill(Player player) {
-        String group = SkyWars.getPermission().getPrimaryGroup(player);
-
-        if (storage.contains("score.groups." + group + ".per-kill")) {
-            return storage.getInt("score.groups." + group + ".per-kill");
+        if (SkyWars.getPermission().hasGroupSupport()) {
+            String group = SkyWars.getPermission().getPrimaryGroup(player);
+            if (storage.contains("score.groups." + group + ".per-kill")) {
+                return storage.getInt("score.groups." + group + ".per-kill");
+            }
         }
-
         return storage.getInt("score.per-kill", 3);
     }
 
     public static int getScorePerWin(Player player) {
-        String group = SkyWars.getPermission().getPrimaryGroup(player);
-
-        if (storage.contains("score.groups." + group + ".per-win")) {
-            return storage.getInt("score.groups." + group + ".per-win");
+        if (SkyWars.getPermission().hasGroupSupport()) {
+            String group = SkyWars.getPermission().getPrimaryGroup(player);
+            if (storage.contains("score.groups." + group + ".per-win")) {
+                return storage.getInt("score.groups." + group + ".per-win");
+            }
         }
-
         return storage.getInt("score.per-win", 10);
     }
 
     public static int getScorePerDeath(Player player) {
-        String group = SkyWars.getPermission().getPrimaryGroup(player);
-
-        if (storage.contains("score.groups." + group + ".per-death")) {
-            return storage.getInt("score.groups." + group + ".per-death");
+        if (SkyWars.getPermission().hasGroupSupport()) {
+            String group = SkyWars.getPermission().getPrimaryGroup(player);
+            if (storage.contains("score.groups." + group + ".per-death")) {
+                return storage.getInt("score.groups." + group + ".per-death");
+            }
         }
-
         return storage.getInt("score.per-death", -1);
     }
 
     public static int getScorePerLeave(Player player) {
-        String group = SkyWars.getPermission().getPrimaryGroup(player);
-
-        if (storage.contains("score.groups." + group + ".per-leave")) {
-            return storage.getInt("score.groups." + group + ".per-leave");
+        if (SkyWars.getPermission().hasGroupSupport()) {
+            String group = SkyWars.getPermission().getPrimaryGroup(player);
+            if (storage.contains("score.groups." + group + ".per-leave")) {
+                return storage.getInt("score.groups." + group + ".per-leave");
+            }
         }
-
         return storage.getInt("score.per-leave", -1);
     }
 
