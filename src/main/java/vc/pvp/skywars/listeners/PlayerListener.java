@@ -120,14 +120,20 @@ public class PlayerListener implements Listener {
 
             return;
         }
-
+        
+        String prefix = null;
+        if (SkyWars.getChat() != null) {
+            prefix = SkyWars.getChat().getPlayerPrefix(player);
+        }
+        if (prefix == null) {
+            prefix = "";
+        }
         String message = new Messaging.MessageFormatter()
                 .setVariable("score", StringUtils.formatScore(gamePlayer.getScore()))
                 .setVariable("player", player.getDisplayName())
                 .setVariable("message", Messaging.stripColor(event.getMessage()))
-                .setVariable("prefix", SkyWars.getChat().getPlayerPrefix(player))
+                .setVariable("prefix", prefix)
                 .format("chat.local");
-
         event.setCancelled(true);
 
         if (gamePlayer.isPlaying()) {

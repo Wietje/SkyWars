@@ -78,12 +78,19 @@ public class SkyWars extends JavaPlugin {
 
                 GamePlayer gamePlayer = PlayerController.get().get((Player) sender);
                 String score = StringUtils.formatScore(gamePlayer.getScore());
-
+            
+                String prefix = null;
+                if (SkyWars.getChat() != null) {
+                    prefix = SkyWars.getChat().getPlayerPrefix(gamePlayer.getBukkitPlayer());
+                }
+                if (prefix == null) {
+                    prefix = "";
+                }
                 Bukkit.broadcastMessage(new Messaging.MessageFormatter()
                         .setVariable("player", gamePlayer.getBukkitPlayer().getDisplayName())
                         .setVariable("score", score)
                         .setVariable("message", Messaging.stripColor(messageBuilder.toString()))
-                        .setVariable("prefix", SkyWars.getChat().getPlayerPrefix(gamePlayer.getBukkitPlayer()))
+                        .setVariable("prefix", prefix)
                         .format("chat.global"));
 
                 return true;
