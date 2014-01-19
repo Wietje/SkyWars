@@ -36,6 +36,10 @@ public class PluginConfig {
         storage.set("lobby.spawn", String.format(Locale.US, "%.2f %.2f %.2f %.2f %.2f", location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
         SkyWars.get().saveConfig();
     }
+    
+    public static int getLobbyRadius() {
+        return storage.getInt("lobby.radius", 0);
+    }
 
     public static boolean isCommandWhitelisted(String command) {
         return whitelistedCommands.contains(command.replace("/", ""));
@@ -147,6 +151,9 @@ public class PluginConfig {
             storage.set("fill-empty-chests", fill);
             storage.set("fill-populated-chests", fill);
             storage.set("fill-chests", null);
+        }
+        if (!storage.isSet("lobby.radius")) {
+            storage.set("lobby.radius", 0);
         }
         SkyWars.get().saveConfig();
     }
