@@ -1,6 +1,8 @@
 package vc.pvp.skywars.config;
 
 import com.google.common.collect.Lists;
+import java.io.File;
+import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,7 +36,7 @@ public class PluginConfig {
         lobbySpawn = location.clone();
         storage.set("lobby.world", lobbySpawn.getWorld().getName());
         storage.set("lobby.spawn", String.format(Locale.US, "%.2f %.2f %.2f %.2f %.2f", location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
-        SkyWars.get().saveConfig();
+        saveConfig();
     }
     
     public static int getLobbyRadius() {
@@ -155,6 +157,16 @@ public class PluginConfig {
         if (!storage.isSet("lobby.radius")) {
             storage.set("lobby.radius", 0);
         }
-        SkyWars.get().saveConfig();
+        saveConfig();
+    }
+    
+    private static boolean saveConfig() {
+        File file = new File("./plugins/SkyWars/config.yml");
+        try {
+            storage.save(file);
+            return true;
+        } catch (IOException ignored) {
+            return false;
+        }
     }
 }
