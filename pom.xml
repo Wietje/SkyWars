@@ -7,7 +7,7 @@
     <groupId>vc.pvp</groupId>
     <artifactId>skywars</artifactId>
     <name>SkyWars</name>
-    <version>1.0.5</version>
+    <version>1.0.5-${build.type}${build.number}</version>
     <description>SkyWars plugin</description>
 
     <repositories>
@@ -109,6 +109,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <build.type></build.type>
+        <build.number>SNAPSHOT</build.number>
     </properties>
 
 
