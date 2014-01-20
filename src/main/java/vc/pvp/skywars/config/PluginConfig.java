@@ -51,8 +51,8 @@ public class PluginConfig {
         return storage.getInt("islands-per-row", 100);
     }
 
-    public static int getIslandSize() {
-        return storage.getInt("island-size", 100);
+    public static int getIslandBuffer() {
+        return storage.getInt("island-buffer", 5);
     }
 
     public static int getScorePerKill(Player player) {
@@ -156,6 +156,12 @@ public class PluginConfig {
         }
         if (!storage.isSet("lobby.radius")) {
             storage.set("lobby.radius", 0);
+        }
+        if (storage.isSet("island-size")) {
+            storage.set("island-size", null);
+        }
+        if (!storage.isSet("island-buffer")) {
+            storage.set("island-buffer", 5);
         }
         saveConfig();
     }

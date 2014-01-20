@@ -27,6 +27,8 @@ import vc.pvp.skywars.utilities.StringUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import org.bukkit.util.Vector;
 
 public class Game {
 
@@ -43,7 +45,9 @@ public class Game {
 
     private CuboidClipboard schematic;
     private World world;
-    private int[] islandCoordinates;
+    private int[] islandReference;
+    private Vector minLoc;
+    private Vector maxLoc;
     private List<Location> chestList = Lists.newArrayList();
 
     public Game(CuboidClipboard schematic) {
@@ -89,12 +93,30 @@ public class Game {
         return world;
     }
 
-    public void setIslandCoordinates(int[] coordinates) {
-        islandCoordinates = coordinates;
+    public void setGridReference(int[] gridReference) {
+        islandReference = gridReference;
     }
 
-    public int[] getIslandCoordinates() {
-        return islandCoordinates;
+    public int[] getGridReference() {
+        return islandReference;
+    }
+    
+    public void setLocation(int midX, int midZ) {
+        int minX = midX + schematic.getOffset().getBlockX() + 1;
+        int minZ = midZ + schematic.getOffset().getBlockZ() + 1;
+        int maxX = minX + schematic.getWidth() - 2;
+        int maxZ = minZ + schematic.getLength() - 2;
+        int buffer = PluginConfig.getIslandBuffer();
+        minLoc = new Vector(minX - buffer, Integer.MIN_VALUE, minZ - buffer);
+        maxLoc = new Vector(maxX + buffer, Integer.MAX_VALUE, maxZ + buffer);
+    }
+    
+    public Vector getMinLoc() {
+        return minLoc;
+    }
+    
+    public Vector getMaxLoc() {
+        return maxLoc;
     }
 
     public void onPlayerJoin(GamePlayer gamePlayer) {

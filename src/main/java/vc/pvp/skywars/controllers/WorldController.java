@@ -8,7 +8,6 @@ import com.sk89q.worldedit.Vector;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.generator.ChunkGenerator;
 import vc.pvp.skywars.config.PluginConfig;
 import vc.pvp.skywars.game.Game;
 import vc.pvp.skywars.utilities.LogUtils;
@@ -17,7 +16,6 @@ import vc.pvp.skywars.utilities.WEUtils;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Random;
 import java.util.logging.Level;
 import vc.pvp.skywars.SkyWars;
 
@@ -26,21 +24,22 @@ public class WorldController {
     private static final int PASTE_HEIGHT = 75;
     private static WorldController worldController;
     private World islandWorld;
-    private Queue<int[]> freeIslands = Lists.newLinkedList();
+    private final Queue<int[]> islandReferences = Lists.newLinkedList();
     private int nextId;
+    private int prevOffset = 0;
 
     public WorldController() {
-        generateIslandCoordinates();
+        generateGridReferences();
         islandWorld = createWorld();
     }
 
-    private void generateIslandCoordinates() {
+    private void generateGridReferences() {
         for (int xxx = 0; xxx < PluginConfig.getIslandsPerWorld(); xxx++) {
             for (int zzz = 0; zzz < PluginConfig.getIslandsPerWorld(); zzz++) {
                 int[] coordinates = new int[] { xxx, zzz };
 
-                if (!freeIslands.contains(coordinates)) {
-                    freeIslands.add(coordinates);
+                if (!islandReferences.contains(coordinates)) {
+                    islandReferences.add(coordinates);
                 }
             }
         }
@@ -51,15 +50,12 @@ public class WorldController {
             return;
         }
         GameController.get().remove(game);
-        int[] islandCoordinates = game.getIslandCoordinates();
-        int islandX = islandCoordinates[0];
-        int islandZ = islandCoordinates[1];
-        int islandSize = PluginConfig.getIslandSize();
-        
-        int minX = (islandX * islandSize) >> 4;
-        int minZ = (islandZ * islandSize) >> 4;
-        int maxX = (islandX * islandSize + islandSize) >> 4;
-        int maxZ = (islandZ * islandSize + islandSize) >> 4;
+
+        int minX = game.getMinLoc().getBlockX();
+        int minZ = game.getMinLoc().getBlockZ();
+        int maxX = game.getMaxLoc().getBlockX();
+        int maxZ = game.getMaxLoc().getBlockZ();
+
         for (int xxx = minX; xxx < maxX; xxx++) {
             for (int zzz = minZ; zzz < maxZ; zzz++) {
                 Chunk chunk = game.getWorld().getChunkAt(xxx, zzz);
@@ -81,22 +77,32 @@ public class WorldController {
     }
 
     public World create(Game game, CuboidClipboard schematic) {
-        if (freeIslands.size() == 0) {
+        if (islandReferences.size() == 0) {
             LogUtils.log(Level.INFO, getClass(), "No more free islands left. Generating new world.");
 
-            generateIslandCoordinates();
+            generateGridReferences();
             islandWorld = createWorld();
         }
 
-        int[] islandCoordinates = freeIslands.poll();
-        game.setIslandCoordinates(islandCoordinates);
+        int[] gridReference = islandReferences.poll();
+        game.setGridReference(gridReference);
 
-        int islandX = islandCoordinates[0];
-        int islandZ = islandCoordinates[1];
-        int islandSize = PluginConfig.getIslandSize();
-
-        int midX = islandX * islandSize + islandSize / 2;
-        int midZ = islandZ * islandSize + islandSize / 2;
+        int gridX = gridReference[0];
+        int gridZ = gridReference[1];
+        int length = schematic.getLength();
+        int width = schematic.getWidth();
+        int islandSize = length > width ? length : width;
+        int offsetX = schematic.getOffset().getBlockX();
+        int offsetZ = schematic.getOffset().getBlockZ();
+        int offset = offsetX < offsetZ ? offsetX : offsetZ;
+        int buffer = PluginConfig.getIslandBuffer();
+        
+        int midX = gridX * (Bukkit.getViewDistance() * 16 + 15 - offset + prevOffset + buffer * 2);
+        int midZ = gridZ * (Bukkit.getViewDistance() * 16 + 15 - offset + prevOffset + buffer * 2);
+        
+        game.setLocation(midX, midZ);
+        
+        prevOffset = islandSize / 2;
 
         if (PluginConfig.buildSchematic()) {
             WEUtils.buildSchematic(game, new Location(islandWorld, midX, PASTE_HEIGHT, midZ), schematic);

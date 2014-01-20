@@ -45,8 +45,8 @@ database:
   database: database
 # The amount of islands per row
 islands-per-row: 100
-# The distance between each island
-island-size: 250
+# The allowed radius the player can move in beyond the map
+island-buffer: 5
 # Whether to build the schematic instead of pasting it straight in
 # This happens to freeze clients due to the chunk updates
 island-building:
