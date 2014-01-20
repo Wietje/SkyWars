@@ -20,6 +20,11 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 
 public class ItemUtils {
+    
+    public static ItemStack parseItem(String input) {
+        String[] item = {input};
+        return parseItem(item);
+    }
 
     /**
      * 

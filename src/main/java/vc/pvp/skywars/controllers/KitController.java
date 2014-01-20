@@ -203,19 +203,11 @@ public class KitController {
 
             String icon = storage.getString("icon.material", "STONE");
             short data = (short) storage.getInt("icon.data", 0);
-            Material material;
-
-            try {
-                material = Material.getMaterial(Integer.parseInt(icon));
-            } catch (NumberFormatException nfe) {
-                material = Material.getMaterial(icon);
+            ItemStack stack = ItemUtils.parseItem(icon + ":" + data);
+            if (stack == null) {
+                stack = new ItemStack(Material.STONE, 1, data);
             }
-
-            if (material == null) {
-                material = Material.STONE;
-            }
-
-            this.icon = new ItemStack(material, 1, data);
+            this.icon = stack;
 
             lores = Lists.newLinkedList();
             if (storage.contains("details")) {
