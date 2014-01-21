@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
+import vc.pvp.skywars.config.PluginConfig;
 
 public class CraftBukkitUtil {
 
@@ -62,6 +63,7 @@ public class CraftBukkitUtil {
         if (playerListHandle == null) return;
 
         getMethod(playerListHandle, "moveToWorld", new Class<?>[] { playerHandle.getClass(), int.class, boolean.class }, new Object[] { playerHandle, 0, false });
+        player.teleport(PluginConfig.getLobbySpawn());
     }
 
     public static boolean isRunning() {

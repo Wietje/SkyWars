@@ -55,10 +55,10 @@ public class WorldController {
         int minZ = game.getMinLoc().getBlockZ();
         int maxX = game.getMaxLoc().getBlockX();
         int maxZ = game.getMaxLoc().getBlockZ();
-
-        for (int xxx = minX; xxx < maxX; xxx++) {
-            for (int zzz = minZ; zzz < maxZ; zzz++) {
-                Chunk chunk = game.getWorld().getChunkAt(xxx, zzz);
+        
+        for (int x = minX; x <= maxX; x = x + 16) {
+            for (int z = minZ; z <= maxZ; z = z + 16) {
+                Chunk chunk = game.getWorld().getChunkAt(x, z);
                 if (chunk != null) {
                     if (!chunk.isLoaded()) {
                         continue;

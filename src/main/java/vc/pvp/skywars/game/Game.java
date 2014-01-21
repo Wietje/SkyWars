@@ -155,10 +155,10 @@ public class Game {
             player.setGameMode(GameMode.SURVIVAL);
         }
 
-        gamePlayer.setGame(this);
         gamePlayer.setChosenKit(false);
         gamePlayer.setSkipFallDamage(true);
         player.teleport(getSpawn(id).clone().add(0.5, 0.5, 0.5));
+        gamePlayer.setGame(this);
 
         KitController.get().openKitMenu(gamePlayer);
 
@@ -207,11 +207,13 @@ public class Game {
         }
 
         if (player.isDead()) {
+            gamePlayer.setGame(null);
             CraftBukkitUtil.forceRespawn(player);
         } else {
             PlayerUtil.refreshPlayer(player);
             PlayerUtil.clearInventory(player);
 
+            gamePlayer.setGame(null);
             player.teleport(PluginConfig.getLobbySpawn());
 
             if (PluginConfig.saveInventory()) {
@@ -223,7 +225,6 @@ public class Game {
 
         playerCount--;
         idPlayerMap.put(playerIdMap.remove(gamePlayer), null);
-        gamePlayer.setGame(null);
         gamePlayer.setChosenKit(false);
 
         if (process && gameState == GameState.PLAYING && playerCount == 1) {
