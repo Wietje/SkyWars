@@ -45,37 +45,6 @@ public class WorldController {
         }
     }
 
-    public void unload(Game game) {
-        if (game.getWorld() == null) {
-            return;
-        }
-        GameController.get().remove(game);
-
-        int minX = game.getMinLoc().getBlockX();
-        int minZ = game.getMinLoc().getBlockZ();
-        int maxX = game.getMaxLoc().getBlockX();
-        int maxZ = game.getMaxLoc().getBlockZ();
-        
-        for (int x = minX; x <= maxX; x = x + 16) {
-            for (int z = minZ; z <= maxZ; z = z + 16) {
-                Chunk chunk = game.getWorld().getChunkAt(x, z);
-                if (chunk != null) {
-                    if (!chunk.isLoaded()) {
-                        continue;
-                    }
-                    for (Entity e : chunk.getEntities()) {
-                        if (e instanceof Player) {
-                            e.teleport(PluginConfig.getLobbySpawn());
-                        } else {
-                            e.remove();
-                        }
-                    }
-                    chunk.unload(false, true);
-                }
-            }
-        }
-    }
-
     public World create(Game game, CuboidClipboard schematic) {
         if (islandReferences.size() == 0) {
             LogUtils.log(Level.INFO, getClass(), "No more free islands left. Generating new world.");

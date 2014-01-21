@@ -351,7 +351,6 @@ public class Game {
         gameState = GameState.ENDING;
         unregisterScoreboard();
 
-        WorldController.get().unload(this);
         GameController.get().remove(this);
     }
 
