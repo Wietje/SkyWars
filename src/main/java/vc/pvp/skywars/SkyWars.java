@@ -181,7 +181,11 @@ public class SkyWars extends JavaPlugin {
                 if (Bukkit.getPluginManager().getPlugin("Multiverse-Core") != null) {
                     MultiverseCore multiVerse = (MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
                     if (world != null) {
-                        result = multiVerse.getMVWorldManager().deleteWorld(file.getName());
+                        try {
+                            result = multiVerse.getMVWorldManager().deleteWorld(world.getName());
+                        } catch (IllegalArgumentException ignored) {
+                            result = false;
+                        }
                     } else {
                         result = multiVerse.getMVWorldManager().removeWorldFromConfig(file.getName());
                     }
