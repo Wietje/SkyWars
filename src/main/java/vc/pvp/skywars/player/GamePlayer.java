@@ -19,6 +19,7 @@ public class GamePlayer {
     private int kills;
     private int deaths;
     private boolean skipFallDamage;
+    private boolean skipFireTicks;
     private ItemStack[] savedInventoryContents = null;
     private ItemStack[] savedArmorContents = null;
 
@@ -137,9 +138,17 @@ public class GamePlayer {
     public void setSkipFallDamage(boolean skipFallDamage) {
         this.skipFallDamage = skipFallDamage;
     }
+    
+    public void setSkipFireTicks(boolean skipFireTicks) {
+        this.skipFireTicks = skipFireTicks;
+    }
 
     public boolean shouldSkipFallDamage() {
         return skipFallDamage;
+    }
+
+    public boolean shouldSkipFireTicks() {
+        return skipFireTicks;
     }
 
     public void saveCurrentState() {

@@ -220,9 +220,6 @@ public class Game {
                 gamePlayer.restoreState();
             }
         }
-        
-        player.setFireTicks(0);
-
         playerCount--;
         idPlayerMap.put(playerIdMap.remove(gamePlayer), null);
         gamePlayer.setChosenKit(false);
