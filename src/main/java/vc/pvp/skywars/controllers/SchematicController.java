@@ -101,7 +101,10 @@ public class SchematicController {
                         }
                     }
                 }
-
+                if (spawnId <= 1) {
+                    noSpawnsNotifier(name);
+                    return;
+                }
                 schematicMap.put(name, schematic);
                 PluginConfig.setSchematicConfig(name, spawnId);
             }
@@ -136,6 +139,10 @@ public class SchematicController {
 
         spawnPlaces.put(position, location);
         spawnCache.put(schematic, spawnPlaces);
+    }
+    
+    public void noSpawnsNotifier(String name) {
+        LogUtils.log(Level.SEVERE, getClass(), String.format("Schematic '" + name + "' does not have any spawns set!"));
     }
 
     public Map<Integer, Vector> getCachedSpawns(CuboidClipboard schematic) {
