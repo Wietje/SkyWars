@@ -146,6 +146,15 @@ public class PluginConfig {
     public static boolean saveInventory() {
         return storage.getBoolean("save-inventory", false);
     }
+    
+    public static void setSchematicConfig(String schematicFile, int playerSize) {
+        String schematicPath = "schematics." + schematicFile.replace(".schematic", "");
+        if (!storage.isSet(schematicPath)) {
+            storage.set(schematicPath + ".min-players", playerSize);
+            storage.set(schematicPath + ".timer", 11);
+            saveConfig();
+        }
+    }
 
     public static void migrateConfig() {
         if (storage.isSet("fill-chests")) {

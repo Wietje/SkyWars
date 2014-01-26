@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
+import vc.pvp.skywars.config.PluginConfig;
 
 public class SchematicController {
 
@@ -102,6 +103,7 @@ public class SchematicController {
                 }
 
                 schematicMap.put(name, schematic);
+                PluginConfig.setSchematicConfig(name, spawnId);
             }
         });
         ++schematicSize;
