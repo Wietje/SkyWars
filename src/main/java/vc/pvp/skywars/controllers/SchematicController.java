@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,6 +13,7 @@ import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.utilities.LogUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +60,9 @@ public class SchematicController {
             
             try {
                 registerSchematic(schematic.getName().replace(".schematic", ""), schematicFormat.load(schematic));
-            } catch (Exception e) {
+            } catch (DataException e) {
+                LogUtils.log(Level.INFO, getClass(), "Could not load schematic %s: %s", schematic.getName(), e.getMessage());
+            } catch (IOException e) {
                 LogUtils.log(Level.INFO, getClass(), "Could not load schematic %s: %s", schematic.getName(), e.getMessage());
             }
         }
@@ -67,7 +71,7 @@ public class SchematicController {
     }
     
     @SuppressWarnings("deprecation")
-    public void registerSchematic(final String name, final CuboidClipboard schematic) {
+    private void registerSchematic(final String name, final CuboidClipboard schematic) {
         Bukkit.getScheduler().runTaskAsynchronously(SkyWars.get(), new Runnable() {
             @Override
             public void run() {
