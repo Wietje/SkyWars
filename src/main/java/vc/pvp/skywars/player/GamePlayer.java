@@ -30,6 +30,12 @@ public class GamePlayer {
         DataStorage.get().loadPlayer(this);
     }
 
+    public GamePlayer(String playerName) {
+        this.bukkitPlayer = null;
+        this.playerName = playerName;
+        DataStorage.get().loadPlayer(this);
+    }
+
     public void save() {
         DataStorage.get().savePlayer(this);
     }
@@ -138,7 +144,7 @@ public class GamePlayer {
     public void setSkipFallDamage(boolean skipFallDamage) {
         this.skipFallDamage = skipFallDamage;
     }
-    
+
     public void setSkipFireTicks(boolean skipFireTicks) {
         this.skipFireTicks = skipFireTicks;
     }

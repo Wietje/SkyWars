@@ -19,6 +19,7 @@ public class MainCommand implements CommandExecutor {
         subCommandMap.put("setlobby", new SetLobbyCommand());
         subCommandMap.put("start", new StartCommand());
         subCommandMap.put("leave", new LeaveCommand());
+        subCommandMap.put("score", new ScoreCommand());
     }
 
     @Override
@@ -67,7 +68,7 @@ public class MainCommand implements CommandExecutor {
     private void printHelp(Player bukkitPlayer, String label) {
         bukkitPlayer.sendMessage(new Messaging.MessageFormatter().withPrefix().format("cmd.available-commands"));
 
-        for (Map.Entry<String, CommandExecutor> commandEntry : subCommandMap.entrySet())
+        for (Map.Entry<String, CommandExecutor> commandEntry : subCommandMap.entrySet()) {
             if (hasPermission(bukkitPlayer, commandEntry.getValue())) {
                 String description = "No description available.";
 
@@ -78,5 +79,6 @@ public class MainCommand implements CommandExecutor {
 
                 bukkitPlayer.sendMessage("\2477/" + label + " " + commandEntry.getKey() + " \247f-\247e " + description);
             }
+        }
     }
 }
