@@ -38,7 +38,7 @@ public class PluginConfig {
         storage.set("lobby.spawn", String.format(Locale.US, "%.2f %.2f %.2f %.2f %.2f", location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
         saveConfig();
     }
-    
+
     public static int getLobbyRadius() {
         return storage.getInt("lobby.radius", 0);
     }
@@ -126,13 +126,17 @@ public class PluginConfig {
     public static boolean fillEmptyChests() {
         return storage.getBoolean("fill-empty-chests", true);
     }
-    
+
     public static boolean fillPopulatedChests() {
         return storage.getBoolean("fill-populated-chests", true);
     }
 
     public static boolean useEconomy() {
         return storage.getBoolean("use-economy", false);
+    }
+
+    public static boolean disableKits() {
+        return storage.getBoolean("disable-kits", false);
     }
 
     public static boolean chatHandledByOtherPlugin() {
@@ -146,7 +150,7 @@ public class PluginConfig {
     public static boolean saveInventory() {
         return storage.getBoolean("save-inventory", false);
     }
-    
+
     public static void setSchematicConfig(String schematicFile, int playerSize) {
         String schematicPath = "schematics." + schematicFile.replace(".schematic", "");
         if (!storage.isSet(schematicPath)) {
@@ -172,9 +176,12 @@ public class PluginConfig {
         if (!storage.isSet("island-buffer")) {
             storage.set("island-buffer", 5);
         }
+        if (!storage.isSet("disable-kits")) {
+            storage.set("disable-kits", false);
+        }
         saveConfig();
     }
-    
+
     private static boolean saveConfig() {
         File file = new File("./plugins/SkyWars/config.yml");
         try {

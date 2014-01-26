@@ -78,7 +78,7 @@ public class SkyWars extends JavaPlugin {
 
                 GamePlayer gamePlayer = PlayerController.get().get((Player) sender);
                 String score = StringUtils.formatScore(gamePlayer.getScore());
-            
+
                 String prefix = null;
                 if (SkyWars.getChat() != null) {
                     prefix = SkyWars.getChat().getPlayerPrefix(gamePlayer.getBukkitPlayer());
@@ -120,7 +120,9 @@ public class SkyWars extends JavaPlugin {
         GameController.get();
         PlayerController.get();
         ChestController.get();
-        KitController.get();
+        if (!PluginConfig.disableKits()) {
+            KitController.get();
+        }
         IconMenuController.get();
 
         try {
@@ -131,10 +133,9 @@ public class SkyWars extends JavaPlugin {
         }
 
         /*if (getDB() != null) {
-            StatisticsController.get();
-            new StatisticsUpdater();
-        }*/
-
+         StatisticsController.get();
+         new StatisticsUpdater();
+         }*/
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new EntityListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
@@ -288,7 +289,7 @@ public class SkyWars extends JavaPlugin {
     public static Database getDB() {
         return instance.database;
     }
-    
+
     @Override
     public WorldGenerator getDefaultWorldGenerator(String worldName, String id) {
         return new WorldGenerator();

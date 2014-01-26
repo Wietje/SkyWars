@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import vc.pvp.skywars.utilities.Messaging;
 
 import java.util.Map;
+import vc.pvp.skywars.config.PluginConfig;
 
 public class MainCommand implements CommandExecutor {
 
@@ -15,11 +16,13 @@ public class MainCommand implements CommandExecutor {
 
     public MainCommand() {
         subCommandMap.put("reload", new ReloadCommand());
-        subCommandMap.put("kit", new KitCommand());
         subCommandMap.put("setlobby", new SetLobbyCommand());
         subCommandMap.put("start", new StartCommand());
         subCommandMap.put("leave", new LeaveCommand());
         subCommandMap.put("score", new ScoreCommand());
+        if (!PluginConfig.disableKits()) {
+            subCommandMap.put("kit", new KitCommand());
+        }
     }
 
     @Override

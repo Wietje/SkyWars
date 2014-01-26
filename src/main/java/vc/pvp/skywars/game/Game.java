@@ -27,10 +27,8 @@ import vc.pvp.skywars.utilities.StringUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
-import vc.pvp.skywars.utilities.LogUtils;
 
 public class Game {
 
@@ -161,7 +159,7 @@ public class Game {
         gamePlayer.setSkipFallDamage(true);
         player.teleport(getSpawn(id).clone().add(0.5, 0.5, 0.5));
         gamePlayer.setGame(this);
-        
+
         // Make sure GodMode is disabled. This should cover CommandBook and WorldGuard
         Plugin commandBook = SkyWars.get().getServer().getPluginManager().getPlugin("CommandBook");
         Plugin worldGuard = SkyWars.get().getServer().getPluginManager().getPlugin("WorldGuard");
@@ -174,7 +172,9 @@ public class Game {
             }
         }
 
-        KitController.get().openKitMenu(gamePlayer);
+        if (!PluginConfig.disableKits()) {
+            KitController.get().openKitMenu(gamePlayer);
+        }
 
         if (!PluginConfig.buildSchematic()) {
             timer = getTimer();
