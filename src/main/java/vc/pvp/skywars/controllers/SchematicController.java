@@ -25,6 +25,7 @@ public class SchematicController {
     private final Map<String, CuboidClipboard> schematicMap = Maps.newHashMap();
     private final Map<CuboidClipboard, Map<Integer, Vector>> spawnCache = Maps.newHashMap();
     private final Map<CuboidClipboard, List<Vector>> chestCache = Maps.newHashMap();
+    private int schematicSize = 0;
 
     public SchematicController() {
         File dataDirectory = SkyWars.get().getDataFolder();
@@ -38,7 +39,7 @@ public class SchematicController {
         if (schematics == null) {
             return;
         }
-
+        
         for (File schematic : schematics) {
             if (!schematic.getName().endsWith(".schematic")) {
                 continue;
@@ -54,7 +55,7 @@ public class SchematicController {
                 LogUtils.log(Level.INFO, getClass(), "Could not load schematic %s: Unable to determine schematic format", schematic.getName());
                 continue;
             }
-
+            
             try {
                 registerSchematic(schematic.getName().replace(".schematic", ""), schematicFormat.load(schematic));
             } catch (Exception e) {
@@ -62,7 +63,7 @@ public class SchematicController {
             }
         }
 
-        LogUtils.log(Level.INFO, getClass(), "Registered %d schematics ...", schematicMap.size());
+        LogUtils.log(Level.INFO, getClass(), "Registered %d schematics ...", schematicSize);
     }
     
     @SuppressWarnings("deprecation")
@@ -99,6 +100,7 @@ public class SchematicController {
                 schematicMap.put(name, schematic);
             }
         });
+        ++schematicSize;
     }
 
     public CuboidClipboard getRandom() {
