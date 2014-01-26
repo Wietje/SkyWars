@@ -5,10 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>vc.pvp</groupId>
-    <artifactId>SkyWars</artifactId>
+    <artifactId>skywars</artifactId>
     <name>SkyWars</name>
     <version>1.0.5-${build.type}${build.number}</version>
     <description>SkyWars plugin</description>
+    <packaging>jar</packaging>
 
     <repositories>
         <repository>
