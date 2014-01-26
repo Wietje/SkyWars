@@ -207,8 +207,8 @@ public class Game {
         }
 
         if (player.isDead()) {
-            gamePlayer.setGame(null);
             CraftBukkitUtil.forceRespawn(player);
+            gamePlayer.setGame(null);
         } else {
             PlayerUtil.refreshPlayer(player);
             PlayerUtil.clearInventory(player);
