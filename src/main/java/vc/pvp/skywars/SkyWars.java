@@ -146,7 +146,6 @@ public class SkyWars extends JavaPlugin {
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void onDisable() {
-        Bukkit.getScheduler().cancelTasks(this);
 
         GameController.get().shutdown();
         PlayerController.get().shutdown();
