@@ -4,7 +4,7 @@ description: ${project.description}
 author: Wietje
 main: ${project.groupId}.${project.artifactId}.${project.name}
 depend: [WorldEdit, Vault]
-softdepend: [Essentials, WhatIsIt, CommandHelper, Multiverse-Core]
+softdepend: [Essentials, WhatIsIt, CommandHelper, Multiverse-Core, WorldGuard]
 
 commands:
   skywars:
