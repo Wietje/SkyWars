@@ -27,7 +27,6 @@ import vc.pvp.skywars.utilities.StringUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.bukkit.util.Vector;
 
 public class Game {
@@ -100,7 +99,7 @@ public class Game {
     public int[] getGridReference() {
         return islandReference;
     }
-    
+
     public void setLocation(int midX, int midZ) {
         int minX = midX + schematic.getOffset().getBlockX() + 1;
         int minZ = midZ + schematic.getOffset().getBlockZ() + 1;
@@ -110,11 +109,11 @@ public class Game {
         minLoc = new Vector(minX - buffer, Integer.MIN_VALUE, minZ - buffer);
         maxLoc = new Vector(maxX + buffer, Integer.MAX_VALUE, maxZ + buffer);
     }
-    
+
     public Vector getMinLoc() {
         return minLoc;
     }
-    
+
     public Vector getMaxLoc() {
         return maxLoc;
     }
@@ -134,7 +133,7 @@ public class Game {
                 .setVariable("slots", String.valueOf(slots))
                 .format("game.join"));
 
-        if (getMinimumPlayers() - playerCount != 0) {
+        if (getMinimumPlayers() - playerCount > 0) {
             sendMessage(new Messaging.MessageFormatter()
                     .withPrefix()
                     .setVariable("amount", String.valueOf(getMinimumPlayers() - playerCount))
@@ -173,7 +172,7 @@ public class Game {
 
     public void onPlayerLeave(final GamePlayer gamePlayer, boolean displayText, boolean process, boolean left) {
         Player player = gamePlayer.getBukkitPlayer();
-
+        playerCount--;
         IconMenuController.get().destroy(player);
 
         if (displayText) {
@@ -220,7 +219,6 @@ public class Game {
                 gamePlayer.restoreState();
             }
         }
-        playerCount--;
         idPlayerMap.put(playerIdMap.remove(gamePlayer), null);
         gamePlayer.setChosenKit(false);
 
@@ -336,9 +334,9 @@ public class Game {
             Bukkit.broadcastMessage(new Messaging.MessageFormatter()
                     .withPrefix()
                     .setVariable("player", player.getDisplayName())
-                    .setVariable("score", String.valueOf( score ))
+                    .setVariable("score", String.valueOf(score))
                     .setVariable("map", SchematicController.get().getName(schematic))
-                    .format("game.win" ) );
+                    .format("game.win"));
         }
 
         for (GamePlayer player : getPlayers()) {
