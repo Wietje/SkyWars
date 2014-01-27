@@ -71,6 +71,8 @@ fill-populated-chests: false
 use-economy: false
 # Set this to true to disable kits entirely
 disable-kits: false
+# Set this to true to disable sound effects
+enable-soundeffects: false
 # Whether the chat formatting should be handled by a different plugin (e.g. EssentialsChat)
 chat-handled-by-other-plugin: false
 # Whether to clear inventory upon game join

@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
@@ -377,6 +378,19 @@ public class Game {
                 if (timer == 0) {
                     onGameStart();
                 } else if (timer % 10 == 0 || timer <= 5) {
+                    if (PluginConfig.enableSounds() && timer <= 3) {
+                        for (GamePlayer gamePlayer : idPlayerMap.values()) {
+                            if (gamePlayer == null) {
+                                continue;
+                            }
+                            Player player = gamePlayer.getBukkitPlayer();
+                            if (player == null) {
+                                continue;
+                            }
+                            player.getWorld().playSound(player.getLocation(),
+                                    Sound.SUCCESSFUL_HIT, 10, 1);
+                        }
+                    }
                     sendMessage(new Messaging.MessageFormatter()
                             .withPrefix()
                             .setVariable("timer", String.valueOf(timer))
@@ -384,7 +398,7 @@ public class Game {
                 }
                 break;
 
-            case PLAYING:
+            default:
                 break;
         }
     }

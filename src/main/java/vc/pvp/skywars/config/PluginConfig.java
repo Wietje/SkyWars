@@ -138,6 +138,10 @@ public class PluginConfig {
     public static boolean disableKits() {
         return storage.getBoolean("disable-kits", false);
     }
+    
+    public static boolean enableSounds() {
+        return storage.getBoolean("enable-soundeffects", true);
+    }
 
     public static boolean chatHandledByOtherPlugin() {
         return storage.getBoolean("chat-handled-by-other-plugin", false);
@@ -178,6 +182,9 @@ public class PluginConfig {
         }
         if (!storage.isSet("disable-kits")) {
             storage.set("disable-kits", false);
+        }
+        if (!storage.isSet("enable-soundeffects")) {
+            storage.set("enable-soundeffects", false);
         }
         saveConfig();
     }
