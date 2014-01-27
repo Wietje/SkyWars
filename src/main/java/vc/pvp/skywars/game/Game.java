@@ -27,6 +27,7 @@ import vc.pvp.skywars.utilities.StringUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
@@ -321,7 +322,7 @@ public class Game {
             if (gamePlayer != null) {
                 objective.getScore(gamePlayer.getBukkitPlayer()).setScore(0);
                 IconMenuController.get().destroy(gamePlayer.getBukkitPlayer());
-                getSpawn(playerEntry.getKey()).clone().add(0, -1D, 0).getBlock().setTypeId(0);
+                getSpawn(playerEntry.getKey()).clone().add(0, -1D, 0).getBlock().setType(Material.AIR);
                 gamePlayer.setGamesPlayed(gamePlayer.getGamesPlayed() + 1);
             }
         }
