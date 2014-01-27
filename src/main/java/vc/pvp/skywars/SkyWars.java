@@ -87,7 +87,7 @@ public class SkyWars extends JavaPlugin {
                     prefix = "";
                 }
                 Bukkit.broadcastMessage(new Messaging.MessageFormatter()
-                        .setVariable("player", gamePlayer.getBukkitPlayer().getDisplayName())
+                        .setVariable("player", gamePlayer.getBukkitPlayer().getName())
                         .setVariable("score", score)
                         .setVariable("message", Messaging.stripColor(messageBuilder.toString()))
                         .setVariable("prefix", prefix)

@@ -133,7 +133,7 @@ public class PlayerListener implements Listener {
         }
         String message = new Messaging.MessageFormatter()
                 .setVariable("score", StringUtils.formatScore(gamePlayer.getScore()))
-                .setVariable("player", player.getDisplayName())
+                .setVariable("player", player.getName())
                 .setVariable("message", Messaging.stripColor(event.getMessage()))
                 .setVariable("prefix", prefix)
                 .format("chat.local");
