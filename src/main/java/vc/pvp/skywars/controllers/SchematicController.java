@@ -107,6 +107,9 @@ public class SchematicController {
                 }
                 schematicMap.put(name, schematic);
                 PluginConfig.setSchematicConfig(name, spawnId);
+                int length = schematic.getLength();
+                int width = schematic.getWidth();
+                WorldController.setIslandSize(length > width ? length : width);
             }
         });
         ++schematicSize;

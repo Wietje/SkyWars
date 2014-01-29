@@ -22,11 +22,11 @@ import vc.pvp.skywars.SkyWars;
 public class WorldController {
 
     private static final int PASTE_HEIGHT = 75;
+    private static int islandSize;
     private static WorldController worldController;
     private World islandWorld;
     private final Queue<int[]> islandReferences = Lists.newLinkedList();
     private int nextId;
-    private int prevOffset = 0;
 
     public WorldController() {
         generateGridReferences();
@@ -58,29 +58,21 @@ public class WorldController {
 
         int gridX = gridReference[0];
         int gridZ = gridReference[1];
-        int length = schematic.getLength();
-        int width = schematic.getWidth();
-        int islandSize = length > width ? length : width;
-        int offsetX = schematic.getOffset().getBlockX();
-        int offsetZ = schematic.getOffset().getBlockZ();
-        int offset = offsetX < offsetZ ? offsetX : offsetZ;
         int buffer = PluginConfig.getIslandBuffer();
         
-        int midX = gridX * (Bukkit.getViewDistance() * 16 + 15 - offset + prevOffset + buffer * 2);
-        int midZ = gridZ * (Bukkit.getViewDistance() * 16 + 15 - offset + prevOffset + buffer * 2);
+        int originX = gridX * ((Bukkit.getViewDistance() * 16) + (islandSize * 2) + (buffer * 2));
+        int originZ = gridZ * ((Bukkit.getViewDistance() * 16) + (islandSize * 2) + (buffer * 2));
         
-        game.setLocation(midX, midZ);
-        
-        prevOffset = islandSize / 2;
+        game.setLocation(originX, originZ);
 
         if (PluginConfig.buildSchematic()) {
-            WEUtils.buildSchematic(game, new Location(islandWorld, midX, PASTE_HEIGHT, midZ), schematic);
+            WEUtils.buildSchematic(game, new Location(islandWorld, originX, PASTE_HEIGHT, originZ), schematic);
         } else {
-            WEUtils.pasteSchematic(new Location(islandWorld, midX, PASTE_HEIGHT, midZ), schematic);
+            WEUtils.pasteSchematic(new Location(islandWorld, originX, PASTE_HEIGHT, originZ), schematic);
         }
 
         Map<Integer, Vector> spawns = SchematicController.get().getCachedSpawns(schematic);
-        Vector isleLocation = new Vector(midX, PASTE_HEIGHT, midZ);
+        Vector isleLocation = new Vector(originX, PASTE_HEIGHT, originZ);
 
         for (Map.Entry<Integer, Vector> entry : spawns.entrySet()) {
             Vector spawn = entry.getValue().add(isleLocation).add(schematic.getOffset());
@@ -194,5 +186,10 @@ public class WorldController {
 
         return worldController;
     }
-
+    
+    public static void setIslandSize(int size) {
+        if (size > islandSize) {
+            islandSize = size;
+        }
+    }
 }

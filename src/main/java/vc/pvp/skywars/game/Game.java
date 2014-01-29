@@ -103,9 +103,9 @@ public class Game {
         return islandReference;
     }
 
-    public void setLocation(int midX, int midZ) {
-        int minX = midX + schematic.getOffset().getBlockX() + 1;
-        int minZ = midZ + schematic.getOffset().getBlockZ() + 1;
+    public void setLocation(int originX, int originZ) {
+        int minX = originX + schematic.getOffset().getBlockX() + 1;
+        int minZ = originZ + schematic.getOffset().getBlockZ() + 1;
         int maxX = minX + schematic.getWidth() - 2;
         int maxZ = minZ + schematic.getLength() - 2;
         int buffer = PluginConfig.getIslandBuffer();
