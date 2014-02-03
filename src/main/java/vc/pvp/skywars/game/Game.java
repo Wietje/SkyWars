@@ -251,10 +251,13 @@ public class Game {
         int scorePerDeath = PluginConfig.getScorePerDeath(player);
         gamePlayer.addScore(scorePerDeath);
         gamePlayer.setDeaths(gamePlayer.getDeaths() + 1);
-
+        
+        GamePlayer gameKiller = null;
         if (killer != null) {
-            GamePlayer gameKiller = PlayerController.get().get(killer);
+            gameKiller = PlayerController.get().get(killer);
+        }
 
+        if (gameKiller != null) {
             int scorePerKill = PluginConfig.getScorePerKill(killer);
             gameKiller.addScore(scorePerKill);
             gameKiller.setKills(gameKiller.getKills() + 1);
