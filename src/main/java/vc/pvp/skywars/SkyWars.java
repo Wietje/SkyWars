@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import vc.pvp.skywars.commands.MainCommand;
@@ -31,6 +32,9 @@ import vc.pvp.skywars.utilities.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class SkyWars extends JavaPlugin {
@@ -75,12 +79,18 @@ public class SkyWars extends JavaPlugin {
                 GamePlayer gamePlayer = PlayerController.get().get((Player) sender);
                 String score = StringUtils.formatScore(gamePlayer.getScore());
 
-                Bukkit.broadcastMessage(new Messaging.MessageFormatter()
+                String message = new Messaging.MessageFormatter()
                         .setVariable("player", gamePlayer.getBukkitPlayer().getDisplayName())
                         .setVariable("score", score)
                         .setVariable("message", Messaging.stripColor(messageBuilder.toString()))
                         .setVariable("prefix", SkyWars.getChat().getPlayerPrefix(gamePlayer.getBukkitPlayer()))
-                        .format("chat.global"));
+                        .format("chat.global");
+                Set<Player> players = new HashSet<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
+                AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(false, (Player) sender, message, players);
+                Bukkit.getServer().getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    Bukkit.broadcastMessage(message);
+                }
 
                 return true;
             }
