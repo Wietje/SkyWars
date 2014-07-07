@@ -27,6 +27,10 @@ import vc.pvp.skywars.utilities.StringUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
 
 public class Game {
 
@@ -43,7 +47,9 @@ public class Game {
 
     private CuboidClipboard schematic;
     private World world;
-    private int[] islandCoordinates;
+    private int[] islandReference;
+    private Vector minLoc;
+    private Vector maxLoc;
     private List<Location> chestList = Lists.newArrayList();
 
     public Game(CuboidClipboard schematic) {
@@ -89,12 +95,30 @@ public class Game {
         return world;
     }
 
-    public void setIslandCoordinates(int[] coordinates) {
-        islandCoordinates = coordinates;
+    public void setGridReference(int[] gridReference) {
+        islandReference = gridReference;
     }
 
-    public int[] getIslandCoordinates() {
-        return islandCoordinates;
+    public int[] getGridReference() {
+        return islandReference;
+    }
+
+    public void setLocation(int originX, int originZ) {
+        int minX = originX + schematic.getOffset().getBlockX() + 1;
+        int minZ = originZ + schematic.getOffset().getBlockZ() + 1;
+        int maxX = minX + schematic.getWidth() - 2;
+        int maxZ = minZ + schematic.getLength() - 2;
+        int buffer = PluginConfig.getIslandBuffer();
+        minLoc = new Vector(minX - buffer, Integer.MIN_VALUE, minZ - buffer);
+        maxLoc = new Vector(maxX + buffer, Integer.MAX_VALUE, maxZ + buffer);
+    }
+
+    public Vector getMinLoc() {
+        return minLoc;
+    }
+
+    public Vector getMaxLoc() {
+        return maxLoc;
     }
 
     public void onPlayerJoin(GamePlayer gamePlayer) {
@@ -112,7 +136,7 @@ public class Game {
                 .setVariable("slots", String.valueOf(slots))
                 .format("game.join"));
 
-        if (getMinimumPlayers() - playerCount != 0) {
+        if (getMinimumPlayers() - playerCount > 0) {
             sendMessage(new Messaging.MessageFormatter()
                     .withPrefix()
                     .setVariable("amount", String.valueOf(getMinimumPlayers() - playerCount))
@@ -133,12 +157,26 @@ public class Game {
             player.setGameMode(GameMode.SURVIVAL);
         }
 
-        gamePlayer.setGame(this);
         gamePlayer.setChosenKit(false);
         gamePlayer.setSkipFallDamage(true);
         player.teleport(getSpawn(id).clone().add(0.5, 0.5, 0.5));
+        gamePlayer.setGame(this);
 
-        KitController.get().openKitMenu(gamePlayer);
+        // Make sure GodMode is disabled. This should cover CommandBook and WorldGuard
+        Plugin commandBook = SkyWars.get().getServer().getPluginManager().getPlugin("CommandBook");
+        Plugin worldGuard = SkyWars.get().getServer().getPluginManager().getPlugin("WorldGuard");
+        if (player.hasMetadata("god")) {
+            if (commandBook != null && commandBook instanceof com.sk89q.commandbook.CommandBook) {
+                player.removeMetadata("god", commandBook);
+            }
+            if (worldGuard != null && worldGuard instanceof com.sk89q.worldguard.bukkit.WorldGuardPlugin) {
+                player.removeMetadata("god", worldGuard);
+            }
+        }
+
+        if (!PluginConfig.disableKits()) {
+            KitController.get().openKitMenu(gamePlayer);
+        }
 
         if (!PluginConfig.buildSchematic()) {
             timer = getTimer();
@@ -151,7 +189,7 @@ public class Game {
 
     public void onPlayerLeave(final GamePlayer gamePlayer, boolean displayText, boolean process, boolean left) {
         Player player = gamePlayer.getBukkitPlayer();
-
+        playerCount--;
         IconMenuController.get().destroy(player);
 
         if (displayText) {
@@ -186,20 +224,19 @@ public class Game {
 
         if (player.isDead()) {
             CraftBukkitUtil.forceRespawn(player);
+            gamePlayer.setGame(null);
         } else {
             PlayerUtil.refreshPlayer(player);
             PlayerUtil.clearInventory(player);
 
+            gamePlayer.setGame(null);
             player.teleport(PluginConfig.getLobbySpawn());
 
             if (PluginConfig.saveInventory()) {
                 gamePlayer.restoreState();
             }
         }
-
-        playerCount--;
         idPlayerMap.put(playerIdMap.remove(gamePlayer), null);
-        gamePlayer.setGame(null);
         gamePlayer.setChosenKit(false);
 
         if (process && gameState == GameState.PLAYING && playerCount == 1) {
@@ -214,10 +251,13 @@ public class Game {
         int scorePerDeath = PluginConfig.getScorePerDeath(player);
         gamePlayer.addScore(scorePerDeath);
         gamePlayer.setDeaths(gamePlayer.getDeaths() + 1);
-
+        
+        GamePlayer gameKiller = null;
         if (killer != null) {
-            GamePlayer gameKiller = PlayerController.get().get(killer);
+            gameKiller = PlayerController.get().get(killer);
+        }
 
+        if (gameKiller != null) {
             int scorePerKill = PluginConfig.getScorePerKill(killer);
             gameKiller.addScore(scorePerKill);
             gameKiller.setKills(gameKiller.getKills() + 1);
@@ -286,7 +326,7 @@ public class Game {
             if (gamePlayer != null) {
                 objective.getScore(gamePlayer.getBukkitPlayer()).setScore(0);
                 IconMenuController.get().destroy(gamePlayer.getBukkitPlayer());
-                getSpawn(playerEntry.getKey()).clone().add(0, -1D, 0).getBlock().setTypeId(0);
+                getSpawn(playerEntry.getKey()).clone().add(0, -1D, 0).getBlock().setType(Material.AIR);
                 gamePlayer.setGamesPlayed(gamePlayer.getGamesPlayed() + 1);
             }
         }
@@ -314,9 +354,9 @@ public class Game {
             Bukkit.broadcastMessage(new Messaging.MessageFormatter()
                     .withPrefix()
                     .setVariable("player", player.getDisplayName())
-                    .setVariable("score", String.valueOf( score ))
+                    .setVariable("score", String.valueOf(score))
                     .setVariable("map", SchematicController.get().getName(schematic))
-                    .format("game.win" ) );
+                    .format("game.win"));
         }
 
         for (GamePlayer player : getPlayers()) {
@@ -326,7 +366,6 @@ public class Game {
         gameState = GameState.ENDING;
         unregisterScoreboard();
 
-        WorldController.get().unload(this);
         GameController.get().remove(this);
     }
 
@@ -342,6 +381,19 @@ public class Game {
                 if (timer == 0) {
                     onGameStart();
                 } else if (timer % 10 == 0 || timer <= 5) {
+                    if (PluginConfig.enableSounds() && timer <= 3) {
+                        for (GamePlayer gamePlayer : idPlayerMap.values()) {
+                            if (gamePlayer == null) {
+                                continue;
+                            }
+                            Player player = gamePlayer.getBukkitPlayer();
+                            if (player == null) {
+                                continue;
+                            }
+                            player.getWorld().playSound(player.getLocation(),
+                                    Sound.SUCCESSFUL_HIT, 10, 1);
+                        }
+                    }
                     sendMessage(new Messaging.MessageFormatter()
                             .withPrefix()
                             .setVariable("timer", String.valueOf(timer))
@@ -349,7 +401,7 @@ public class Game {
                 }
                 break;
 
-            case PLAYING:
+            default:
                 break;
         }
     }

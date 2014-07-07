@@ -1,6 +1,6 @@
 package vc.pvp.skywars;
 
-import com.earth2me.essentials.IEssentials;
+import com.onarandombox.MultiverseCore.MultiverseCore;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -32,6 +32,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
+import org.bukkit.World;
+import vc.pvp.skywars.config.PluginConfig;
+import vc.pvp.skywars.utilities.WorldGenerator;
 
 public class SkyWars extends JavaPlugin {
 
@@ -49,6 +52,7 @@ public class SkyWars extends JavaPlugin {
 
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+        PluginConfig.migrateConfig();
         reloadConfig();
 
         new Messaging(this);
@@ -75,11 +79,18 @@ public class SkyWars extends JavaPlugin {
                 GamePlayer gamePlayer = PlayerController.get().get((Player) sender);
                 String score = StringUtils.formatScore(gamePlayer.getScore());
 
+                String prefix = null;
+                if (SkyWars.getChat() != null) {
+                    prefix = SkyWars.getChat().getPlayerPrefix(gamePlayer.getBukkitPlayer());
+                }
+                if (prefix == null) {
+                    prefix = "";
+                }
                 Bukkit.broadcastMessage(new Messaging.MessageFormatter()
-                        .setVariable("player", gamePlayer.getBukkitPlayer().getDisplayName())
+                        .setVariable("player", gamePlayer.getBukkitPlayer().getName())
                         .setVariable("score", score)
                         .setVariable("message", Messaging.stripColor(messageBuilder.toString()))
-                        .setVariable("prefix", SkyWars.getChat().getPlayerPrefix(gamePlayer.getBukkitPlayer()))
+                        .setVariable("prefix", prefix)
                         .format("chat.global"));
 
                 return true;
@@ -109,7 +120,9 @@ public class SkyWars extends JavaPlugin {
         GameController.get();
         PlayerController.get();
         ChestController.get();
-        KitController.get();
+        if (!PluginConfig.disableKits()) {
+            KitController.get();
+        }
         IconMenuController.get();
 
         try {
@@ -120,10 +133,9 @@ public class SkyWars extends JavaPlugin {
         }
 
         /*if (getDB() != null) {
-            StatisticsController.get();
-            new StatisticsUpdater();
-        }*/
-
+         StatisticsController.get();
+         new StatisticsUpdater();
+         }*/
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new EntityListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
@@ -135,7 +147,6 @@ public class SkyWars extends JavaPlugin {
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public void onDisable() {
-        Bukkit.getScheduler().cancelTasks(this);
 
         GameController.get().shutdown();
         PlayerController.get().shutdown();
@@ -165,8 +176,38 @@ public class SkyWars extends JavaPlugin {
                 if (!file.isDirectory() || !file.getName().matches("island-\\d+")) {
                     continue;
                 }
-
-                FileUtils.deleteFolder(file);
+                World world = this.getServer().getWorld(file.getName());
+                Boolean result = false;
+                if (Bukkit.getPluginManager().getPlugin("Multiverse-Core") != null) {
+                    MultiverseCore multiVerse = (MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core");
+                    if (world != null) {
+                        try {
+                            result = multiVerse.getMVWorldManager().deleteWorld(world.getName());
+                        } catch (IllegalArgumentException ignored) {
+                            result = false;
+                        }
+                    } else {
+                        result = multiVerse.getMVWorldManager().removeWorldFromConfig(file.getName());
+                    }
+                }
+                if (!result) {
+                    if (world != null) {
+                        result = this.getServer().unloadWorld(world, true);
+                        if (result == true) {
+                            this.getLogger().log(Level.INFO, "World ''{0}'' was unloaded from memory.", file.getName());
+                        } else {
+                            this.getLogger().log(Level.SEVERE, "World ''{0}'' could not be unloaded.", file.getName());
+                        }
+                    }
+                    result = FileUtils.deleteFolder(file);
+                    if (result == true) {
+                        this.getLogger().log(Level.INFO, "World ''{0}'' was deleted.", file.getName());
+                    } else {
+                        this.getLogger().log(Level.SEVERE, "World ''{0}'' was NOT deleted.", file.getName());
+                        this.getLogger().log(Level.SEVERE, "Are you sure the folder {0} exists?", file.getName());
+                        this.getLogger().log(Level.SEVERE, "Please check your file permissions on ''{0}''", file.getName());
+                    }
+                }
             }
         }
 
@@ -233,10 +274,6 @@ public class SkyWars extends JavaPlugin {
         return instance;
     }
 
-    public static IEssentials getEssentials() {
-        return (IEssentials) Bukkit.getPluginManager().getPlugin("Essentials");
-    }
-
     public static Permission getPermission() {
         return permission;
     }
@@ -251,5 +288,10 @@ public class SkyWars extends JavaPlugin {
 
     public static Database getDB() {
         return instance.database;
+    }
+
+    @Override
+    public WorldGenerator getDefaultWorldGenerator(String worldName, String id) {
+        return new WorldGenerator();
     }
 }

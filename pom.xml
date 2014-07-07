@@ -7,8 +7,9 @@
     <groupId>vc.pvp</groupId>
     <artifactId>skywars</artifactId>
     <name>SkyWars</name>
-    <version>1.0.4</version>
+    <version>1.1.1-${build.type}${build.number}</version>
     <description>SkyWars plugin</description>
+    <packaging>jar</packaging>
 
     <repositories>
         <repository>
@@ -22,6 +23,10 @@
         <repository>
             <id>vault-repo</id>
             <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+        </repository>
+        <repository>
+            <id>multiverse-repo</id>
+            <url>http://repo.onarandombox.com/content/groups/public</url>
         </repository>
     </repositories>
 
@@ -39,9 +44,27 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <version>LATEST</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>commandbook</artifactId>
+            <version>LATEST</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>net.milkbowl</groupId>
             <artifactId>vault</artifactId>
             <version>1.2.27</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.onarandombox.multiversecore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <version>LATEST</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -93,6 +116,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <build.type></build.type>
+        <build.number>SNAPSHOT</build.number>
     </properties>
 
 

@@ -19,6 +19,9 @@ import vc.pvp.skywars.utilities.Messaging;
 import vc.pvp.skywars.utilities.StringUtils;
 
 import java.util.Iterator;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.util.Vector;
 
 public class PlayerListener implements Listener {
 
@@ -64,8 +67,16 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         GamePlayer gamePlayer = PlayerController.get().get(player);
 
-        if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getTypeId() == Material.STONE_PLATE.getId()) {
-            if (!gamePlayer.isPlaying() && player.getLocation().getWorld().equals(PluginConfig.getLobbySpawn().getWorld())) {
+        if (event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.STONE_PLATE) {
+            if (player.getWorld() != PluginConfig.getLobbySpawn().getWorld()) {
+                return;
+            }
+            if (PluginConfig.getLobbyRadius() != 0) {
+                if (player.getLocation().distance(PluginConfig.getLobbySpawn()) > PluginConfig.getLobbyRadius()) {
+                    return;
+                }
+            }
+            if (!gamePlayer.isPlaying()) {
                 if (SchematicController.get().size() == 0) {
                     player.sendMessage(new Messaging.MessageFormatter().format("error.no-schematics"));
                     return;
@@ -112,14 +123,20 @@ public class PlayerListener implements Listener {
 
             return;
         }
-
+        
+        String prefix = null;
+        if (SkyWars.getChat() != null) {
+            prefix = SkyWars.getChat().getPlayerPrefix(player);
+        }
+        if (prefix == null) {
+            prefix = "";
+        }
         String message = new Messaging.MessageFormatter()
                 .setVariable("score", StringUtils.formatScore(gamePlayer.getScore()))
-                .setVariable("player", player.getDisplayName())
+                .setVariable("player", player.getName())
                 .setVariable("message", Messaging.stripColor(event.getMessage()))
-                .setVariable("prefix", SkyWars.getChat().getPlayerPrefix(player))
+                .setVariable("prefix", prefix)
                 .format("chat.local");
-
         event.setCancelled(true);
 
         if (gamePlayer.isPlaying()) {
@@ -146,6 +163,86 @@ public class PlayerListener implements Listener {
                 event.setCancelled(true);
                 player.sendMessage( new Messaging.MessageFormatter().withPrefix().format("error.cmd-disabled"));
             }
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent e) {
+        Location from = e.getFrom();
+        Location to = e.getTo();
+        if (from.getBlockX() == to.getBlockX() && from.getBlockY() == to.getBlockY() && from.getBlockZ() == to.getBlockZ()) {
+            return;
+        }
+        Player p = e.getPlayer();
+        GamePlayer gamePlayer = PlayerController.get().get(p);
+        if (!gamePlayer.isPlaying()) {
+            return;
+        }
+        Vector minVec = gamePlayer.getGame().getMinLoc();
+        Vector maxVec = gamePlayer.getGame().getMaxLoc();
+        if (p.getLocation().getBlockY() < 0) {
+            p.setFallDistance(0F);
+            gamePlayer.getGame().onPlayerDeath(gamePlayer, null);
+        } else if (!to.toVector().isInAABB(minVec, maxVec)) {
+            p.sendMessage(new Messaging.MessageFormatter().withPrefix()
+                    .format("You cannot leave the arena."));
+            p.teleport(from);
+        }
+    }
+    
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent e) {
+        Player p = e.getPlayer();
+        GamePlayer gP = PlayerController.get().get(p);
+        if (gP == null) {
+            return;
+        }
+        if (!gP.isPlaying()) {
+            return;
+        }
+        Vector minVec = gP.getGame().getMinLoc();
+        Vector maxVec = gP.getGame().getMaxLoc();
+        if (e.getTo().getWorld() != gP.getGame().getWorld()) {
+            p.sendMessage(new Messaging.MessageFormatter().withPrefix().format("You left the arena."));
+            gP.getGame().onPlayerLeave(gP);
+        } else if (!e.getTo().toVector().isInAABB(minVec, maxVec)) {
+            p.sendMessage(new Messaging.MessageFormatter().withPrefix().format("You left the arena."));
+            gP.getGame().onPlayerLeave(gP);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerFlight(PlayerToggleFlightEvent e) {
+        GamePlayer gP = PlayerController.get().get(e.getPlayer());
+        if (gP == null) {
+            return;
+        }
+        if (!gP.isPlaying()) {
+            return;
+        }
+        if (e.isFlying()) {
+            e.setCancelled(true);
+            e.getPlayer().setAllowFlight(false);
+            e.getPlayer().setFlying(false);
+            e.getPlayer().sendMessage(new Messaging.MessageFormatter().withPrefix()
+                    .format("You're not allowed to fly while in-game."));
+        }
+    }
+
+    @EventHandler
+    public void onGameModeChange(PlayerGameModeChangeEvent e) {
+        GamePlayer gP = PlayerController.get().get(e.getPlayer());
+        if (gP == null) {
+            return;
+        }
+        if (!gP.isPlaying()) {
+            return;
+        }
+        if (!e.getNewGameMode().equals(GameMode.SURVIVAL)) {
+            e.setCancelled(true);
+            e.getPlayer().setGameMode(GameMode.SURVIVAL);
+            e.getPlayer().sendMessage(new Messaging.MessageFormatter().withPrefix()
+                    .format("You're not allowed to change gamemode while in-game."));
         }
     }
 }

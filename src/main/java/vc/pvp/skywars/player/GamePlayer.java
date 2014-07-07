@@ -19,6 +19,7 @@ public class GamePlayer {
     private int kills;
     private int deaths;
     private boolean skipFallDamage;
+    private boolean skipFireTicks;
     private ItemStack[] savedInventoryContents = null;
     private ItemStack[] savedArmorContents = null;
 
@@ -26,6 +27,12 @@ public class GamePlayer {
         this.bukkitPlayer = bukkitPlayer;
         this.playerName = bukkitPlayer.getName();
 
+        DataStorage.get().loadPlayer(this);
+    }
+
+    public GamePlayer(String playerName) {
+        this.bukkitPlayer = null;
+        this.playerName = playerName;
         DataStorage.get().loadPlayer(this);
     }
 
@@ -58,7 +65,7 @@ public class GamePlayer {
     }
 
     public int getScore() {
-        if (PluginConfig.useEconomy()) {
+        if (PluginConfig.useEconomy() && SkyWars.getEconomy() != null) {
             return (int) SkyWars.getEconomy().getBalance(playerName);
         }
 
@@ -66,7 +73,7 @@ public class GamePlayer {
     }
 
     public void setScore(int score) {
-        if (PluginConfig.useEconomy()) {
+        if (PluginConfig.useEconomy() && SkyWars.getEconomy() != null) {
             double balance = SkyWars.getEconomy().getBalance(playerName);
             if (balance < 0) {
                 SkyWars.getEconomy().depositPlayer(playerName, -balance);
@@ -81,7 +88,7 @@ public class GamePlayer {
     }
 
     public void addScore(int score) {
-        if (PluginConfig.useEconomy()) {
+        if (PluginConfig.useEconomy() && SkyWars.getEconomy() != null) {
             if (score < 0) {
                 SkyWars.getEconomy().withdrawPlayer(playerName, -score);
             } else {
@@ -138,8 +145,16 @@ public class GamePlayer {
         this.skipFallDamage = skipFallDamage;
     }
 
+    public void setSkipFireTicks(boolean skipFireTicks) {
+        this.skipFireTicks = skipFireTicks;
+    }
+
     public boolean shouldSkipFallDamage() {
         return skipFallDamage;
+    }
+
+    public boolean shouldSkipFireTicks() {
+        return skipFireTicks;
     }
 
     public void saveCurrentState() {

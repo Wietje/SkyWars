@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -12,11 +13,13 @@ import vc.pvp.skywars.SkyWars;
 import vc.pvp.skywars.utilities.LogUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
+import vc.pvp.skywars.config.PluginConfig;
 
 public class SchematicController {
 
@@ -25,6 +28,7 @@ public class SchematicController {
     private final Map<String, CuboidClipboard> schematicMap = Maps.newHashMap();
     private final Map<CuboidClipboard, Map<Integer, Vector>> spawnCache = Maps.newHashMap();
     private final Map<CuboidClipboard, List<Vector>> chestCache = Maps.newHashMap();
+    private int schematicSize = 0;
 
     public SchematicController() {
         File dataDirectory = SkyWars.get().getDataFolder();
@@ -38,7 +42,7 @@ public class SchematicController {
         if (schematics == null) {
             return;
         }
-
+        
         for (File schematic : schematics) {
             if (!schematic.getName().endsWith(".schematic")) {
                 continue;
@@ -54,18 +58,21 @@ public class SchematicController {
                 LogUtils.log(Level.INFO, getClass(), "Could not load schematic %s: Unable to determine schematic format", schematic.getName());
                 continue;
             }
-
+            
             try {
                 registerSchematic(schematic.getName().replace(".schematic", ""), schematicFormat.load(schematic));
-            } catch (Exception e) {
+            } catch (DataException e) {
+                LogUtils.log(Level.INFO, getClass(), "Could not load schematic %s: %s", schematic.getName(), e.getMessage());
+            } catch (IOException e) {
                 LogUtils.log(Level.INFO, getClass(), "Could not load schematic %s: %s", schematic.getName(), e.getMessage());
             }
         }
 
-        LogUtils.log(Level.INFO, getClass(), "Registered %d schematics ...", schematicMap.size());
+        LogUtils.log(Level.INFO, getClass(), "Registered %d schematics ...", schematicSize);
     }
-
-    public void registerSchematic(final String name, final CuboidClipboard schematic) {
+    
+    @SuppressWarnings("deprecation")
+    private void registerSchematic(final String name, final CuboidClipboard schematic) {
         Bukkit.getScheduler().runTaskAsynchronously(SkyWars.get(), new Runnable() {
             @Override
             public void run() {
@@ -94,10 +101,18 @@ public class SchematicController {
                         }
                     }
                 }
-
+                if (spawnId <= 1) {
+                    noSpawnsNotifier(name);
+                    return;
+                }
                 schematicMap.put(name, schematic);
+                PluginConfig.setSchematicConfig(name, spawnId);
+                int length = schematic.getLength();
+                int width = schematic.getWidth();
+                WorldController.setIslandSize(length > width ? length : width);
             }
         });
+        ++schematicSize;
     }
 
     public CuboidClipboard getRandom() {
@@ -127,6 +142,10 @@ public class SchematicController {
 
         spawnPlaces.put(position, location);
         spawnCache.put(schematic, spawnPlaces);
+    }
+    
+    public void noSpawnsNotifier(String name) {
+        LogUtils.log(Level.SEVERE, getClass(), String.format("Schematic '" + name + "' does not have any spawns set!"));
     }
 
     public Map<Integer, Vector> getCachedSpawns(CuboidClipboard schematic) {

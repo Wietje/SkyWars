@@ -45,7 +45,7 @@ public class SQLStorage extends DataStorage {
                         resultSet = preparedStatement.executeQuery();
 
                         if (resultSet != null && resultSet.next()) {
-                            if (!PluginConfig.useEconomy()) {
+                            if (!PluginConfig.useEconomy()  || SkyWars.getEconomy() == null) {
                                 gamePlayer.setScore(resultSet.getInt("score"));
                             }
                             gamePlayer.setGamesPlayed(resultSet.getInt("games_played"));

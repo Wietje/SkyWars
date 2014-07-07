@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import vc.pvp.skywars.utilities.Messaging;
 
 import java.util.Map;
+import vc.pvp.skywars.config.PluginConfig;
 
 public class MainCommand implements CommandExecutor {
 
@@ -15,10 +16,13 @@ public class MainCommand implements CommandExecutor {
 
     public MainCommand() {
         subCommandMap.put("reload", new ReloadCommand());
-        subCommandMap.put("kit", new KitCommand());
         subCommandMap.put("setlobby", new SetLobbyCommand());
         subCommandMap.put("start", new StartCommand());
         subCommandMap.put("leave", new LeaveCommand());
+        subCommandMap.put("score", new ScoreCommand());
+        if (!PluginConfig.disableKits()) {
+            subCommandMap.put("kit", new KitCommand());
+        }
     }
 
     @Override
@@ -67,7 +71,7 @@ public class MainCommand implements CommandExecutor {
     private void printHelp(Player bukkitPlayer, String label) {
         bukkitPlayer.sendMessage(new Messaging.MessageFormatter().withPrefix().format("cmd.available-commands"));
 
-        for (Map.Entry<String, CommandExecutor> commandEntry : subCommandMap.entrySet())
+        for (Map.Entry<String, CommandExecutor> commandEntry : subCommandMap.entrySet()) {
             if (hasPermission(bukkitPlayer, commandEntry.getValue())) {
                 String description = "No description available.";
 
@@ -78,5 +82,6 @@ public class MainCommand implements CommandExecutor {
 
                 bukkitPlayer.sendMessage("\2477/" + label + " " + commandEntry.getKey() + " \247f-\247e " + description);
             }
+        }
     }
 }

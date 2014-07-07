@@ -45,6 +45,8 @@ public class ChestController {
 
                     if (itemStack != null) {
                         chestItemList.add(new ChestItem(itemStack, chance));
+                    } else {
+                        LogUtils.log(Level.WARNING, getClass(), "Invalid item in chest: " + item);    
                     }
                 }
             }

@@ -1,9 +1,10 @@
 name: ${project.name}
 version: ${project.version}
 description: ${project.description}
-author: Wietje
+authors: [Wietje, andypandy89]
 main: ${project.groupId}.${project.artifactId}.${project.name}
-depend: [WorldEdit, Essentials, Vault, WhatIsIt]
+depend: [WorldEdit, Vault]
+softdepend: [Essentials, WhatIsIt, CommandHelper, Multiverse-Core, WorldGuard]
 
 commands:
   skywars:

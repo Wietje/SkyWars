@@ -3,6 +3,8 @@ lobby:
   world: world
   # The spawn coordinates (X Y Z and additionally yaw and pitch)
   spawn: 0 64 0
+  # The lobby radius. 0 for global.
+  radius: 0
 score:
   # Score per kill
   per-kill: 3
@@ -43,8 +45,8 @@ database:
   database: database
 # The amount of islands per row
 islands-per-row: 100
-# The distance between each island
-island-size: 250
+# The allowed radius the player can move in beyond the map
+island-buffer: 5
 # Whether to build the schematic instead of pasting it straight in
 # This happens to freeze clients due to the chunk updates
 island-building:
@@ -60,11 +62,17 @@ build-cages: true
 # Whether to ignore AIR in the schematics (could leave some gaps in some schematics when enabled,
 # does improve pasting speed though).
 ignore-air: false
-# Whether to use fill chests with the contents of chest.yml. Disable this if you want to use
+# Whether to fill empty chests with the contents of chest.yml. Disable this if you want to use
 # schematics it preset chest contents.
-fill-chests: true
+fill-empty-chests: true
+# Whether to fill already populated chests with the contents of chest.yml.
+fill-populated-chests: false
 # Whether to use the economy of the server to figure as score
 use-economy: false
+# Set this to true to disable kits entirely
+disable-kits: false
+# Set this to true to disable sound effects
+enable-soundeffects: false
 # Whether the chat formatting should be handled by a different plugin (e.g. EssentialsChat)
 chat-handled-by-other-plugin: false
 # Whether to clear inventory upon game join
